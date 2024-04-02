@@ -36,7 +36,7 @@ $Desc
 
 **Notes:** $Notes
 
-$Tags
+**Tags:** $Tags
 
 '''
 
@@ -54,7 +54,7 @@ $Desc
 
 **Notes:** $Notes
 
-$Tags
+**Tags:** $Tags
 
 '''
 
@@ -66,7 +66,7 @@ $Tags
 
 $Desc
 
-$Tags
+**Tags:** $Tags
 
 '''
 
