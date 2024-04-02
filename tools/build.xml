@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="aeon3obsidian" basedir=".">
+	<property name="version" value="0.1.0" />
+	<property name="test-app" value="aeon3obsidian" />
+	
+	<property name="source-path" location="../src" />
+	<property name="test-path" location="../test" />
+	<property name="build-path" location="../build" />
+	<property name="dist-path" location="../dist" />
+	<property name="docs-path" location="../docs" />
+	<property name="application" value="${ant.project.name}" />
+	<property name="release" value="${application}_v${version}" />
+
+	<target name="build" description="inline all library modules">
+		<delete file="${test-path}/${test-app}.py" />
+		<exec executable="python" failonerror="true">
+		    <arg value="build_${test-app}.py"/>
+		</exec>
+	</target>
+
+	<target name="test" description="integration test">
+		<copy file="${test-path}/test_${test-app}_.py" tofile="${test-path}/test_${test-app}.py" />
+		<replace encoding="utf-8" file="${test-path}/test_${test-app}.py" token="${test-app}_" value="${test-app}" />
+		<exec executable="python" failonerror="true">
+		    <arg value="${test-path}/test_${test-app}.py"/>
+		</exec>
+	</target>
+
+	<target name="dist" description="generate the distribution">		
+		<delete dir="${build-path}" />
+		<delete dir="${dist-path}" />
+		<mkdir dir="${build-path}" />
+		<mkdir dir="${dist-path}" />
+		<mkdir dir="${build-path}/${release}" />
+		
+		<copy file="${test-path}/${test-app}.py" tofile="${build-path}/${release}/${application}.py" />
+		<replace encoding="utf-8" file="${build-path}/${release}/${application}.py" token="@release" value="${version}" />
+		
+		<copy file="../LICENSE" todir="${build-path}/${release}" />	
+		<copy file="${docs-path}/usage.md" tofile="${build-path}/${release}/README.md" />
+		
+		<copy todir="${build-path}/${release}" failonerror="false"> 
+			<fileset dir="../sample" />
+		</copy>		
+		
+		<fixcrlf encoding="utf-8" eol="lf" srcdir="${build-path}/${release}" includes="**/*.*" />
+
+		<zip destfile="${dist-path}/${release}.zip" basedir="${build-path}/${release}" />
+		
+		<copy file="${docs-path}/template/index.md" overwrite="True" todir="${docs-path}" />
+		<replace encoding="utf-8" file="${docs-path}/index.md" token="0.99.0" value="${version}" />
+	</target>
+
+	<target name="clean" description="clean up">		
+		<delete file="${test-path}/${test-app}.py" />
+		<delete file="${test-path}/test_${test-app}.py" />		
+	</target>
+
+</project>

@@ -1,0 +1,6 @@
+/build/
+/test/work/
+/test/aeon3obsidian.py
+/test/test_aeon3obsidian.py
+*.pyc
+*.bak
