@@ -4,9 +4,7 @@ Copyright (c) 2024 Peter Triesberger
 For further information see https://github.com/peter88213/aeon3yw
 Published under the MIT License (https://opensource.org/licenses/mit-license.php)
 """
-import os
 import codecs
-from pywriter.pywriter_globals import ERROR
 
 
 def scan_file(filePath):
@@ -15,17 +13,11 @@ def scan_file(filePath):
     Positional arguments:
         filePath -- str: Path to the Aeon 3 project file.
     
-    Return a string containing either the JSON part or an error message.
+    Return a string containing the JSON part.
     """
-    try:
-        with open(filePath, 'rb') as f:
-            binInput = f.read()
-    except(FileNotFoundError):
-        return f'{ERROR}"{os.path.normpath(filePath)}" not found.'
+    with open(filePath, 'rb') as f:
+        binInput = f.read()
 
-    except:
-        return f'{ERROR}Cannot read "{os.path.normpath(filePath)}".'
-    
     # JSON part: all characters between the first and last curly bracket.
     chrData = []
     opening = ord('{')
@@ -40,13 +32,11 @@ def scan_file(filePath):
                 level -= 1
                 if level == 0:
                     break
-
     if level != 0:
-        return f'{ERROR}Corrupted data.'
+        raise ValueError('Error: Corrupted data.')
 
-    try:
-        jsonStr = codecs.decode(bytes(chrData), encoding='utf-8')
-    except:
-        return f'{ERROR}Cannot decode "{os.path.normpath(filePath)}".'
+    jsonStr = codecs.decode(bytes(chrData), encoding='utf-8')
+    if not jsonStr:
+        raise ValueError('Error: No JSON part found.')
 
     return jsonStr
