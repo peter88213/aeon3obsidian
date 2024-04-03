@@ -5,13 +5,6 @@ usage: aeon3obsidian.py [-h] [--silent] Sourcefile Suffix
 
 positional arguments:
   Sourcefile  The path of the .aeon or .csv file.
-  Suffix      The suffix of the output file, indicating the content:  
-              _full_synopsis - Part and chapter titles and scene summaries. 
-              _brief_synopsis - Part and chapter titles and scene titles.
-              _chapter_overview - Part and chapter titles.
-              _character_sheets - Character tags, summary, characteristics, traits, and notes.
-              _location_sheets - Location tags and summaries. 
-              _report - A full description of the narrative part, the characters and the locations.
 
 optional arguments:
   -h, --help  show this help message and exit
@@ -57,7 +50,7 @@ SETTINGS = dict(
 
 
 def main(sourcePath, silent=True):
-    """Convert an .aeon or .csv source file to a Markdown target file.
+    """Convert an .aeon or .csv source file to Markdown target files.
     
     Positional arguments:
         sourcePath -- str: The path of the .aeon or .csv file.
