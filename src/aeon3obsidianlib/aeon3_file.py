@@ -6,6 +6,8 @@ Published under the MIT License (https://opensource.org/licenses/mit-license.php
 """
 import json
 from aeon3obsidianlib.aeon3_fop import scan_file
+from datetime import datetime
+from datetime import timedelta
 
 
 class Aeon3File:
@@ -82,6 +84,16 @@ class Aeon3File:
         for uid in aeonItem['tags']:
             tags.append(f"#{self.tags[uid].strip().replace(' ','_')}")
             item['tags'] = tags
+        timestamp = aeonItem['startDate'].get('timestamp', 'null')
+        if timestamp and timestamp != 'null':
+            startDateTime = datetime.min + timedelta(seconds=timestamp)
+            item['Date'] = startDateTime.strftime('%x')
+            timeStr = startDateTime.strftime('%X')
+            seconds = aeonItem['startDate'].get('second', 0)
+            if not seconds:
+                h, m, s = timeStr.split(':')
+                timeStr = ':'.join([h, m])
+            item['Time'] = timeStr
 
         return item
 
