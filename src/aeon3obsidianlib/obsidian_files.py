@@ -14,9 +14,11 @@ class ObsidianFiles:
     def __init__(self, folderPath):
         """Set the Obsidian folder."""
         self.folderPath = folderPath
-        self.dataModel = {}
-        self.labelLookup = {}
+        self.items = {}
+        self.labels = {}
         self.itemIndex = {}
+        self.relationships = {}
+        self.narrative = {}
 
     def write(self):
         """Create a set of Markdown files in the Obsidian folder.
@@ -24,11 +26,12 @@ class ObsidianFiles:
         Return a success message.
         """
         os.makedirs(self.folderPath, exist_ok=True)
-        for uid in self.dataModel:
-            title = self._strip_title(self.labelLookup[uid])
-            text = self._build_content(self.dataModel[uid])
+        for uid in self.items:
+            title = self._strip_title(self.labels[uid])
+            text = self._build_content(self.items[uid])
             self._write_file(f'{self.folderPath}/{title}.md', text)
         self._build_index()
+        self._build_narrative()
         return 'Obsidian files successfully written.'
 
     def _build_content(self, item):
@@ -38,23 +41,40 @@ class ObsidianFiles:
             item: dictionary of Aeon item properties.
         """
         lines = []
-        for itemProperty in item:
-            if item[itemProperty]:
-                lines.append(item[itemProperty])
+        for uid in item:
+            itemProperty = item[uid]
+            if itemProperty:
+                if type(itemProperty) == str:
+                    lines.append(itemProperty)
+                else:
+                    for element in itemProperty:
+                        if element in self.relationships:
+                            refId, objId = self.relationships[element]
+                            refLabel = self._strip_title(self.labels[refId])
+                            objLabel = self._strip_title(self.labels[objId])
+                            line = f'- {refLabel}: [[{objLabel}]]'
+                            lines.append(line)
+                        else:
+                            link = self.labels.get(element, None)
+                            if link:
+                                lines.append(f'[[{link}]]')
+                            else:
+                                lines.append(element)
+
         return '\n\n'.join(lines)
 
     def _build_index(self):
         """Create index pages."""
         mainIndexlines = []
         for uid in self.itemIndex:
-            itemType = f'_{self._strip_title(self.labelLookup[uid])}'
+            itemType = f'_{self._strip_title(self.labels[uid])}'
             mainIndexlines.append(f'- [[{itemType}]]')
             itemUidList = self.itemIndex[uid]
 
             # Create an index file with the items of the type.
             lines = []
             for itemUid in itemUidList:
-                itemLabel = self.labelLookup[itemUid]
+                itemLabel = self.labels[itemUid]
                 lines.append(f'- [[{self._strip_title(itemLabel)}]]')
             text = '\n'.join(lines)
             self._write_file(f'{self.folderPath}/{itemType}.md', text)
@@ -62,6 +82,22 @@ class ObsidianFiles:
         # Create a main index file with the types.
         text = '\n'.join(mainIndexlines)
         self._write_file(f'{self.folderPath}/__index.md', text)
+
+    def _build_narrative(self):
+        """Create a page with the narrative tree."""
+
+        def get_branch(root, level):
+            level += 1
+            uid = root['id']
+            if uid in self.labels:
+                lines.append(f"{'#' * level} [[{self.labels[uid]}]]")
+            for branch in root['children']:
+                get_branch(branch, level)
+
+        lines = []
+        get_branch(self.narrative, 1)
+        text = '\n\n'.join(lines)
+        self._write_file(f'{self.folderPath}/__narrative.md', text)
 
     def _strip_title(self, title):
         """Return title with characters removed that must not appear in a file name."""

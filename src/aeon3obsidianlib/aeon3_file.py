@@ -13,22 +13,18 @@ class Aeon3File:
     def __init__(self, filePath):
         """Set the Aeon 3 project file path."""
         self.filePath = filePath
-        self.dataModel = {}
-        self.labelLookup = {}
+        self.items = {}
+        self.labels = {}
         self.itemIndex = {}
-
-    def _read_item(self, aeonItem):
-        """Return a dictionary with the relevant item properties."""
-        item = {}
-        item['shortLabel'] = aeonItem['shortLabel']
-        item['summary'] = aeonItem['summary']
-        return item
+        self.relationships = {}
+        self.tags = {}
+        self.narrative = {}
 
     def read(self):
         """Read the Aeon 3 project file.
         
-        Store the relevant data in the dataModel dictionary.
-        Populate the labelLookup dictionary.
+        Store the relevant data in the items dictionary.
+        Populate the labels dictionary.
         Populate the itemIndex dictionary.
         
         Return a success message.
@@ -38,29 +34,54 @@ class Aeon3File:
         jsonPart = scan_file(self.filePath)
         jsonData = json.loads(jsonPart)
 
-        #--- Create a labelLookup dictionary for types and relationships.
+        #--- Create a labels dictionary for types and relationships.
         for uid in jsonData['definitions']['types']['byId']:
             element = jsonData['definitions']['types']['byId'][uid].get('label', '').strip()
             if element:
-                self.labelLookup[uid] = element
+                self.labels[uid] = element
         for uid in jsonData['definitions']['references']['byId']:
             element = jsonData['definitions']['references']['byId'][uid].get('label', '').strip()
             if element:
-                self.labelLookup[uid] = element
+                self.labels[uid] = element
+
+        #--- create a tag lookup dictionary.
         for uid in jsonData['data']['tags']:
             element = jsonData['data']['tags'][uid].strip()
-            self.labelLookup[uid] = element
+            self.tags[uid] = element
 
-        #--- Create a data model and extend the labelLookup dictionary.
+        #--- Create a data model and extend the labels dictionary.
         for uid in jsonData['data']['items']['byId']:
             aeonItem = jsonData['data']['items']['byId'][uid]
-            self.labelLookup[uid] = aeonItem['label'].strip()
-            self.dataModel[uid] = self._read_item(aeonItem)
+            self.labels[uid] = aeonItem['label'].strip()
+            self.items[uid] = self._read_item(aeonItem)
 
         #--- Create an index.
         for uid in jsonData['data']['items']['allIdsForType']:
             itemUidList = jsonData['data']['items']['allIdsForType'][uid]
             self.itemIndex[uid] = itemUidList
 
+        #--- Create a relationships dictionary.
+        for uid in jsonData['data']['relationships']['byId']:
+            refId = jsonData['data']['relationships']['byId'][uid]['reference']
+            objId = jsonData['data']['relationships']['byId'][uid]['object']
+            self.relationships[uid] = (refId, objId)
+
+        #--- Get the narrative tree.
+        self.narrative = jsonData['data'].get('narrative', self.narrative)
+
         return 'Aeon 3 file successfully read.'
+
+    def _read_item(self, aeonItem):
+        """Return a dictionary with the relevant item properties."""
+        item = {}
+        item['shortLabel'] = aeonItem['shortLabel']
+        item['summary'] = aeonItem['summary']
+        item['references'] = aeonItem['references']
+        item['children'] = aeonItem['children']
+        tags = []
+        for uid in aeonItem['tags']:
+            tags.append(f"#{self.tags[uid].strip().replace(' ','_')}")
+            item['tags'] = tags
+
+        return item
 

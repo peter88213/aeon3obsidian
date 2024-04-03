@@ -34,9 +34,11 @@ def main(sourcePath):
 
     # Create an Obsidian fileset object and write the data.
     obsidianFiles = ObsidianFiles(obsidianFolder)
-    obsidianFiles.dataModel = aeon3File.dataModel
-    obsidianFiles.labelLookup = aeon3File.labelLookup
+    obsidianFiles.items = aeon3File.items
+    obsidianFiles.labels = aeon3File.labels
     obsidianFiles.itemIndex = aeon3File.itemIndex
+    obsidianFiles.relationships = aeon3File.relationships
+    obsidianFiles.narrative = aeon3File.narrative
     print(obsidianFiles.write())
 
 
