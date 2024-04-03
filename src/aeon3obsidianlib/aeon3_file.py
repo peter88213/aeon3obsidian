@@ -8,6 +8,7 @@ import json
 from aeon3obsidianlib.aeon3_fop import scan_file
 from datetime import datetime
 from datetime import timedelta
+from datetime import date
 
 
 class Aeon3File:
@@ -80,14 +81,19 @@ class Aeon3File:
         item['summary'] = aeonItem['summary']
         item['references'] = aeonItem['references']
         item['children'] = aeonItem['children']
+
+        # Read tags.
         tags = []
         for uid in aeonItem['tags']:
             tags.append(f"#{self.tags[uid].strip().replace(' ','_')}")
             item['tags'] = tags
+
+        # Read date/time.
         timestamp = aeonItem['startDate'].get('timestamp', 'null')
         if timestamp and timestamp != 'null':
             startDateTime = datetime.min + timedelta(seconds=timestamp)
-            item['Date'] = startDateTime.strftime('%x')
+            item['Date'] = date.isoformat(startDateTime)
+
             timeStr = startDateTime.strftime('%X')
             seconds = aeonItem['startDate'].get('second', 0)
             if not seconds:

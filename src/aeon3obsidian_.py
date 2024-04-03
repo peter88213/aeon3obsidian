@@ -14,7 +14,6 @@ import os
 import sys
 from aeon3obsidianlib.aeon3_file import Aeon3File
 from aeon3obsidianlib.obsidian_files import ObsidianFiles
-import locale
 
 
 def main(sourcePath):
@@ -24,7 +23,6 @@ def main(sourcePath):
         sourcePath -- str: The path of the .aeon file.
         
     """
-    locale.setlocale(locale.LC_TIME, "")
 
     # Create an Aeon 3 file object and read the data.
     aeon3File = Aeon3File(sourcePath)
