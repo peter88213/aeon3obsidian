@@ -4,12 +4,13 @@ The *aeon3obsidian* Python script extracts the narrative part of an [Aeon Timeli
 
 ## Features
 
-- Create markdown formatted files for parts, chapters, scenes, characters, and locations.
-- The scene, character, and location files may contain tags, descriptions, notes, and other data provided by the Aeon project.
-- The scene files contain links to characters (role: "Participant"), and locations (role: "Location").
-- The scene files contain date, time, and duration, if any. 
-- All files are located in one single folder. 
-- The `_index.md` file holds the table of contents. 
+- Creates a page for each *aeon* item. 
+- Creates links between the pages according to the relationships. 
+- Inserts tags, if any. 
+- Inserts date/time (Gregorian date, "A.D." only) for the event-based pages. 
+- Inserts duration (as set in Aeon) for the event-based pages. 
+- The `__index.md` file holds the table of contents on the top level. 
+- The `__narrative.md` file holds the table of contents of the narrative. 
 
 ## Requirements
 
@@ -23,9 +24,19 @@ The *aeon3obsidian* Python script extracts the narrative part of an [Aeon Timeli
 
 [Changelog](changelog)
 
-## Usage, Markdown reference
+## Usage
 
-See the [instructions for use](usage)
+```
+aeon3obsidian.py Sourcefile
+
+positional arguments:
+  Sourcefile  The path of the .aeon or .csv file.
+
+```
+
+You can also drag an *.aeon* file and drop it on the *aeon3obsidian.py* icon. 
+
+The created Markdown files are placed in a subfolder, named after the *aeon* project.
 
 ## License
 

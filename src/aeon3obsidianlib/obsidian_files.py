@@ -45,21 +45,21 @@ class ObsidianFiles:
             itemProperty = item[uid]
             if itemProperty:
                 if type(itemProperty) == str:
-                    lines.append(itemProperty)
+                    lines.append(self._to_markdown(itemProperty))
                 else:
                     for element in itemProperty:
                         if element in self.relationships:
                             refId, objId = self.relationships[element]
-                            refLabel = self._strip_title(self.labels[refId])
-                            objLabel = self._strip_title(self.labels[objId])
-                            line = f'- {refLabel}: [[{objLabel}]]'
+                            linkLabel = self.labels[refId]
+                            link = self._strip_title(self.labels[objId])
+                            line = f'- {linkLabel}: [[{link}]]'
                             lines.append(line)
                         else:
                             link = self._strip_title(self.labels.get(element, ''))
                             if link:
                                 lines.append(f'[[{link}]]')
                             else:
-                                lines.append(element)
+                                lines.append(self._to_markdown(element))
 
         return '\n\n'.join(lines)
 
@@ -105,6 +105,10 @@ class ObsidianFiles:
         for c in self.FORBIDDEN_CHARACTERS:
             title = title.replace(c, '')
         return title
+
+    def _to_markdown(self, text):
+        """Return text with double linebreaks."""
+        return text.replace('\n', '\n\n')
 
     def _write_file(self, filePath, text):
         """Write a single file and create a backup copy, if applicable.

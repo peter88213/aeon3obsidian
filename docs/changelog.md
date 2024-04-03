@@ -4,6 +4,11 @@
 
 ## Changelog
 
+### v1.0.0
+
+- Rewrite from scratch.
+- All Aeon 3 items and relationships are now processed.
+
 ### v0.1.1 Alpha release
 
 - Add a "Tags" mark to the section, character, and location pages. 

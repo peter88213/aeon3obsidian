@@ -33,19 +33,31 @@ class Aeon3File:
         Return a success message.
         """
 
+        def add_label(key, value):
+            """Add an entry to the labels dictionary, handling multiple labels."""
+            if value in labelText:
+                print(f'Multiple label: {value}')
+                number = labelText[value] + 1
+                labelText[value] = number
+                value = f'{value}({number})'
+            else:
+                labelText[value] = 0
+            self.labels[key] = value
+
         #--- Read the aeon file and get a JSON data structure.
         jsonPart = scan_file(self.filePath)
         jsonData = json.loads(jsonPart)
+        labelText = {}
 
         #--- Create a labels dictionary for types and relationships.
         for uid in jsonData['definitions']['types']['byId']:
-            element = jsonData['definitions']['types']['byId'][uid].get('label', '').strip()
-            if element:
-                self.labels[uid] = element
+            item = jsonData['definitions']['types']['byId'][uid].get('label', '').strip()
+            if item:
+                add_label(uid, item)
         for uid in jsonData['definitions']['references']['byId']:
-            element = jsonData['definitions']['references']['byId'][uid].get('label', '').strip()
-            if element:
-                self.labels[uid] = element
+            reference = jsonData['definitions']['references']['byId'][uid].get('label', '').strip()
+            if reference:
+                self.labels[uid] = reference
 
         #--- create a tag lookup dictionary.
         for uid in jsonData['data']['tags']:
@@ -55,8 +67,8 @@ class Aeon3File:
         #--- Create a data model and extend the labels dictionary.
         for uid in jsonData['data']['items']['byId']:
             aeonItem = jsonData['data']['items']['byId'][uid]
-            self.labels[uid] = aeonItem['label'].strip()
-            self.items[uid] = self._read_item(aeonItem)
+            add_label(uid, aeonItem['label'].strip())
+            self.items[uid] = self._get_item(aeonItem)
 
         #--- Create an index.
         for uid in jsonData['data']['items']['allIdsForType']:
@@ -74,7 +86,27 @@ class Aeon3File:
 
         return 'Aeon 3 file successfully read.'
 
-    def _read_item(self, aeonItem):
+    def _get_date(self, aeonItem):
+        timestamp = aeonItem['startDate'].get('timestamp', 'null')
+        if timestamp and timestamp != 'null':
+            startDateTime = datetime.min + timedelta(seconds=timestamp)
+            dateStr = date.isoformat(startDateTime)
+        else:
+            dateStr = ''
+        return dateStr
+
+    def _get_duration(self, aeonItem):
+        durationList = []
+        durationDict = aeonItem.get('duration', None)
+        if durationDict:
+            durations = list(durationDict)
+            for unit in durations:
+                if durationDict[unit]:
+                    durationList.append(f'{durationDict[unit]} {unit}')
+        durationStr = ', '.join(durationList)
+        return durationStr
+
+    def _get_item(self, aeonItem):
         """Return a dictionary with the relevant item properties."""
         item = {}
         item['shortLabel'] = aeonItem['shortLabel']
@@ -88,18 +120,29 @@ class Aeon3File:
             tags.append(f"#{self.tags[uid].strip().replace(' ','_')}")
             item['tags'] = tags
 
-        # Read date/time.
+        # Read date/time/duration.
+        dateStr = self._get_date(aeonItem)
+        if dateStr:
+            item['Date'] = dateStr
+        timeStr = self._get_time(aeonItem)
+        if timeStr:
+            item['Time'] = timeStr
+        durationStr = self._get_duration(aeonItem)
+        if durationStr:
+            item['Duration'] = durationStr
+
+        return item
+
+    def _get_time(self, aeonItem):
         timestamp = aeonItem['startDate'].get('timestamp', 'null')
         if timestamp and timestamp != 'null':
             startDateTime = datetime.min + timedelta(seconds=timestamp)
-            item['Date'] = date.isoformat(startDateTime)
-
             timeStr = startDateTime.strftime('%X')
             seconds = aeonItem['startDate'].get('second', 0)
             if not seconds:
-                h, m, s = timeStr.split(':')
+                h, m, _ = timeStr.split(':')
                 timeStr = ':'.join([h, m])
-            item['Time'] = timeStr
-
-        return item
+        else:
+            timeStr = ''
+        return timeStr
 
