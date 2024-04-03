@@ -36,6 +36,7 @@ def main(sourcePath):
     obsidianFiles = ObsidianFiles(obsidianFolder)
     obsidianFiles.dataModel = aeon3File.dataModel
     obsidianFiles.labelLookup = aeon3File.labelLookup
+    obsidianFiles.itemIndex = aeon3File.itemIndex
     print(obsidianFiles.write())
 
 

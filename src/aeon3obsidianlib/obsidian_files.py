@@ -16,6 +16,20 @@ class ObsidianFiles:
         self.folderPath = folderPath
         self.dataModel = {}
         self.labelLookup = {}
+        self.itemIndex = {}
+
+    def write(self):
+        """Create a set of Markdown files in the Obsidian folder.
+        
+        Return a success message.
+        """
+        os.makedirs(self.folderPath, exist_ok=True)
+        self._build_index()
+        for uid in self.dataModel:
+            title = self._strip_title(self.labelLookup[uid])
+            text = self._build_content(self.dataModel[uid])
+            self._write_file(f'{self.folderPath}/{title}.md', text)
+        return 'Obsidian files successfully written.'
 
     def _build_content(self, item):
         """Return a string with the Markdown file content.
@@ -29,17 +43,31 @@ class ObsidianFiles:
                 lines.append(item[itemProperty])
         return '\n\n'.join(lines)
 
-    def write(self):
-        """Create a set of Markdown files in the Obsidian folder.
-        
-        Return a success message.
-        """
-        os.makedirs(self.folderPath, exist_ok=True)
-        for uid in self.dataModel:
-            title = self._strip_title(self.labelLookup[uid])
-            text = self._build_content(self.dataModel[uid])
-            self._write_file(f'{self.folderPath}/{title}.md', text)
-        return 'Obsidian files successfully written.'
+    def _build_index(self):
+        """Create index pages."""
+        mainIndexlines = []
+        for uid in self.itemIndex:
+            itemType = f'_{self._strip_title(self.labelLookup[uid])}'
+            mainIndexlines.append(f'- [[{itemType}]]')
+            itemUidList = self.itemIndex[uid]
+
+            # Create an index file with the items of the type.
+            lines = []
+            for itemUid in itemUidList:
+                itemLabel = self.labelLookup[itemUid]
+                lines.append(f'- [[{self._strip_title(itemLabel)}]]')
+            text = '\n'.join(lines)
+            self._write_file(f'{self.folderPath}/{itemType}.md', text)
+
+        # Create a main index file with the types.
+        text = '\n'.join(mainIndexlines)
+        self._write_file(f'{self.folderPath}/__index.md', text)
+
+    def _strip_title(self, title):
+        """Return title with characters removed that must not appear in a file name."""
+        for c in self.FORBIDDEN_CHARACTERS:
+            title = title.replace(c, '')
+        return title
 
     def _write_file(self, filePath, text):
         """Write a single file and create a backup copy, if applicable.
@@ -65,10 +93,4 @@ class ObsidianFiles:
             raise Exception(f'Error: Cannot write "{os.path.normpath(filePath)}": {str(ex)}.')
 
         return f'"{os.path.normpath(filePath)}" written.'
-
-    def _strip_title(self, title):
-        """Return title with characters removed that must not appear in a file name."""
-        for c in self.FORBIDDEN_CHARACTERS:
-            title = title.replace(c, '')
-        return title
 

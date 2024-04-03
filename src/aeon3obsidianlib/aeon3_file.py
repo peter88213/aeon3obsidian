@@ -15,6 +15,7 @@ class Aeon3File:
         self.filePath = filePath
         self.dataModel = {}
         self.labelLookup = {}
+        self.itemIndex = {}
 
     def _read_item(self, aeonItem):
         """Return a dictionary with the relevant item properties."""
@@ -28,6 +29,7 @@ class Aeon3File:
         
         Store the relevant data in the dataModel dictionary.
         Populate the labelLookup dictionary.
+        Populate the itemIndex dictionary.
         
         Return a success message.
         """
@@ -54,6 +56,11 @@ class Aeon3File:
             aeonItem = jsonData['data']['items']['byId'][uid]
             self.labelLookup[uid] = aeonItem['label']
             self.dataModel[uid] = self._read_item(aeonItem)
+
+        #--- Create an index.
+        for uid in jsonData['data']['items']['allIdsForType']:
+            itemUidList = jsonData['data']['items']['allIdsForType'][uid]
+            self.itemIndex[uid] = itemUidList
 
         return 'Aeon 3 file successfully read.'
 
