@@ -55,7 +55,7 @@ class ObsidianFiles:
                             line = f'- {refLabel}: [[{objLabel}]]'
                             lines.append(line)
                         else:
-                            link = self.labels.get(element, None)
+                            link = self._strip_title(self.labels.get(element, ''))
                             if link:
                                 lines.append(f'[[{link}]]')
                             else:
@@ -74,8 +74,8 @@ class ObsidianFiles:
             # Create an index file with the items of the type.
             lines = []
             for itemUid in itemUidList:
-                itemLabel = self.labels[itemUid]
-                lines.append(f'- [[{self._strip_title(itemLabel)}]]')
+                itemLabel = self._strip_title(self.labels[itemUid])
+                lines.append(f'- [[{itemLabel}]]')
             text = '\n'.join(lines)
             self._write_file(f'{self.folderPath}/{itemType}.md', text)
 
@@ -90,7 +90,8 @@ class ObsidianFiles:
             level += 1
             uid = root['id']
             if uid in self.labels:
-                lines.append(f"{'#' * level} [[{self.labels[uid]}]]")
+                link = self._strip_title(self.labels[uid])
+                lines.append(f"{'#' * level} [[{link}]]")
             for branch in root['children']:
                 get_branch(branch, level)
 
