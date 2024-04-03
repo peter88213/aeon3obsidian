@@ -17,7 +17,7 @@ The *aeon3obsidian* Python script extracts the narrative part of an [Aeon Timeli
 
 ## Download and install {#download}
 
-[Download the latest release (version 0.1.1)](https://raw.githubusercontent.com/peter88213/aeon3obsidian/master/dist/aeon3obsidian_v0.1.1.zip)
+[Download the latest release (version 0.1.1)](https://raw.githubusercontent.com/peter88213/aeon3obsidian/main/dist/aeon3obsidian_v0.1.1.zip)
 
 - Unpack the zipfile and copy *aeon3obsidian.py* whereever you want.
 
