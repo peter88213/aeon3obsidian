@@ -24,11 +24,11 @@ class ObsidianFiles:
         Return a success message.
         """
         os.makedirs(self.folderPath, exist_ok=True)
-        self._build_index()
         for uid in self.dataModel:
             title = self._strip_title(self.labelLookup[uid])
             text = self._build_content(self.dataModel[uid])
             self._write_file(f'{self.folderPath}/{title}.md', text)
+        self._build_index()
         return 'Obsidian files successfully written.'
 
     def _build_content(self, item):

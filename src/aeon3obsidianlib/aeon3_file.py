@@ -40,21 +40,21 @@ class Aeon3File:
 
         #--- Create a labelLookup dictionary for types and relationships.
         for uid in jsonData['definitions']['types']['byId']:
-            element = jsonData['definitions']['types']['byId'][uid].get('label', None)
+            element = jsonData['definitions']['types']['byId'][uid].get('label', '').strip()
             if element:
                 self.labelLookup[uid] = element
         for uid in jsonData['definitions']['references']['byId']:
-            element = jsonData['definitions']['references']['byId'][uid].get('label', None)
+            element = jsonData['definitions']['references']['byId'][uid].get('label', '').strip()
             if element:
                 self.labelLookup[uid] = element
         for uid in jsonData['data']['tags']:
-            element = jsonData['data']['tags'][uid]
+            element = jsonData['data']['tags'][uid].strip()
             self.labelLookup[uid] = element
 
         #--- Create a data model and extend the labelLookup dictionary.
         for uid in jsonData['data']['items']['byId']:
             aeonItem = jsonData['data']['items']['byId'][uid]
-            self.labelLookup[uid] = aeonItem['label']
+            self.labelLookup[uid] = aeonItem['label'].strip()
             self.dataModel[uid] = self._read_item(aeonItem)
 
         #--- Create an index.
