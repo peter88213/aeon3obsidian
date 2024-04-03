@@ -4,7 +4,7 @@
 usage: aeon3obsidian.py Sourcefile
 
 positional arguments:
-  Sourcefile  The path of the .aeon or .csv file.
+  Sourcefile  The path of the .aeon file.
 
 Copyright (c) 2024 Peter Triesberger
 For further information see https://github.com/peter88213/aeon3obsidian
@@ -21,7 +21,6 @@ def main(sourcePath):
     
     Positional arguments:
         sourcePath -- str: The path of the .aeon file.
-        
     """
 
     # Create an Aeon 3 file object and read the data.
