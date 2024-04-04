@@ -31,7 +31,7 @@ project and generates a set of Markdown documents.
 aeon3obsidian.py Sourcefile
 
 positional arguments:
-  Sourcefile  The path of the .aeon or .csv file.
+  Sourcefile  The path of the .aeon file.
 
 ```
 
