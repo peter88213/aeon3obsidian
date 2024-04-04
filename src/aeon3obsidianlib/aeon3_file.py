@@ -1,7 +1,7 @@
 """Provide a class for Aeon Timeline 3 'aeon' file representation.
 
 Copyright (c) 2024 Peter Triesberger
-For further information see https://github.com/peter88213/aeon3yw
+For further information see https://github.com/peter88213/aeon3obsidian
 Published under the MIT License (https://opensource.org/licenses/mit-license.php)
 """
 import json
