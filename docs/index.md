@@ -41,6 +41,15 @@ You can also drag an *.aeon* file and drop it on the *aeon3obsidian.py* icon.
 
 The created Markdown files are placed in a subfolder, named after the *aeon* project.
 
+### Troubleshooting
+
+The *aeon3obsidian.py* script should create a folder that contains a whole set of *.md* files. This folder should be found in the same directory where your *.aeon* file is located. If your .aeon file path is for example "c:\Users\Snoopy\Documents\my timeline.aeon", the folder containing the *.md* files is "c:\Users\Snoopy\Documents\my timeline". 
+
+Please make sure that all requirements are met. Drag/drop only works if Python is properly installed on your computer, so that *aeon3obsidian.py* is recognized by your operating system as a Python script. Which Python version have you installed?
+
+In case of doubt, please start the *aeon3obsidian.py* script from the text console as described, so you get an error message that might help.
+
+
 ## License
 
 This extension is distributed under the [MIT
