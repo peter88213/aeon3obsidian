@@ -47,7 +47,9 @@ The *aeon3obsidian.py* script should create a folder that contains a whole set o
 
 Please make sure that all requirements are met. Drag/drop only works if Python is properly installed on your computer, so that *aeon3obsidian.py* is recognized by your operating system as a Python script. 
 
-The *aeon3obsidian.py* icon should look like this: ![Python script icon](Screenshots/py.png)
+The *aeon3obsidian.py* icon should look like this: 
+
+![Python script icon](Screenshots/py.png)
 
 Which Python version have you installed?
 
