@@ -4,6 +4,10 @@
 
 ## Changelog
 
+### v1.0.3
+
+- Make sure that the item index doesn't contain items without a label.
+
 ### v1.0.2
 
 - Fix a regression from v1.0.1 where the program may abort on error.

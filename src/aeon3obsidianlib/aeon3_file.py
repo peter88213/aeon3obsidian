@@ -59,7 +59,7 @@ class Aeon3File:
             if reference:
                 self.labels[uid] = reference
 
-        #--- create a tag lookup dictionary.
+        #--- Create a tag lookup dictionary.
         for uid in jsonData['data']['tags']:
             element = jsonData['data']['tags'][uid].strip()
             self.tags[uid] = element
@@ -72,10 +72,11 @@ class Aeon3File:
                 add_label(uid, aeonLabel.strip())
                 self.items[uid] = self._get_item(aeonItem)
 
-        #--- Create an index.
+        #--- Create an item index.
         for uid in jsonData['data']['items']['allIdsForType']:
-            itemUidList = jsonData['data']['items']['allIdsForType'][uid]
-            self.itemIndex[uid] = itemUidList
+            if uid in self.items:
+                itemUidList = jsonData['data']['items']['allIdsForType'][uid]
+                self.itemIndex[uid] = itemUidList
 
         #--- Create a relationships dictionary.
         for uid in jsonData['data']['relationships']['byId']:

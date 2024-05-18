@@ -21,7 +21,7 @@ project and generates a set of Markdown documents.
 
 ## Download and install {#download}
 
-[Download the latest release (version 1.0.2)](https://raw.githubusercontent.com/peter88213/aeon3obsidian/main/dist/aeon3obsidian_v1.0.2.zip)
+[Download the latest release (version 1.0.3)](https://raw.githubusercontent.com/peter88213/aeon3obsidian/main/dist/aeon3obsidian_v1.0.3.zip)
 
 - Unpack the zipfile and copy *aeon3obsidian.py* whereever you want.
 
