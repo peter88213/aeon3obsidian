@@ -68,11 +68,9 @@ class Aeon3File:
         for uid in jsonData['data']['items']['byId']:
             aeonItem = jsonData['data']['items']['byId'][uid]
             aeonLabel = aeonItem.get('label', None)
-            if aeonLabel is None:
-                return
-
-            add_label(uid, aeonLabel.strip())
-            self.items[uid] = self._get_item(aeonItem)
+            if aeonLabel is not None:
+                add_label(uid, aeonLabel.strip())
+                self.items[uid] = self._get_item(aeonItem)
 
         #--- Create an index.
         for uid in jsonData['data']['items']['allIdsForType']:

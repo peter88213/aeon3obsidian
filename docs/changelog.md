@@ -4,6 +4,10 @@
 
 ## Changelog
 
+### v1.0.2
+
+- Fix a regression from v1.0.1 where the program may abort on error.
+
 ### v1.0.1
 
 - When building the data model, skip Aeon items with a missing label. 
