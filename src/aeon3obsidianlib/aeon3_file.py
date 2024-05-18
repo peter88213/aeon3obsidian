@@ -67,7 +67,11 @@ class Aeon3File:
         #--- Create a data model and extend the labels dictionary.
         for uid in jsonData['data']['items']['byId']:
             aeonItem = jsonData['data']['items']['byId'][uid]
-            add_label(uid, aeonItem['label'].strip())
+            aeonLabel = aeonItem.get('label', None)
+            if aeonLabel is None:
+                return
+
+            add_label(uid, aeonLabel.strip())
             self.items[uid] = self._get_item(aeonItem)
 
         #--- Create an index.

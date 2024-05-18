@@ -4,6 +4,10 @@
 
 ## Changelog
 
+### v1.0.1
+
+- When building the data model, skip Aeon items with a missing label. 
+
 ### v1.0.0
 
 - Rewrite from scratch.

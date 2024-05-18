@@ -21,7 +21,7 @@ project and generates a set of Markdown documents.
 
 ## Download and install {#download}
 
-[Download the latest release (version 1.0.0)](https://raw.githubusercontent.com/peter88213/aeon3obsidian/main/dist/aeon3obsidian_v1.0.0.zip)
+[Download the latest release (version 1.0.1)](https://raw.githubusercontent.com/peter88213/aeon3obsidian/main/dist/aeon3obsidian_v1.0.1.zip)
 
 - Unpack the zipfile and copy *aeon3obsidian.py* whereever you want.
 
@@ -53,7 +53,7 @@ The *aeon3obsidian.py* icon should look like this:
 
 Which Python version have you installed?
 
-In case of doubt, please start the *aeon3obsidian.py* script from the text console as described, so you get an error message that might help.
+In case of doubt, please start the *aeon3obsidian.py* script from the text console, so you get an error message that might help.
 
 
 ## License
