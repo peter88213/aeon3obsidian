@@ -1,6 +1,9 @@
 #!/usr/bin/python3
 """Convert Aeon Timeline 3 project data to Obsidian Markdown fileset. 
 
+Version @release
+Requires Python 3.6+
+
 usage: aeon3obsidian.py Sourcefile
 
 positional arguments:
@@ -25,6 +28,7 @@ def main(sourcePath):
 
     # Create an Aeon 3 file object and read the data.
     aeon3File = Aeon3File(sourcePath)
+    print('aeon3obsidian version @release')
     print(aeon3File.read())
 
     # Define the output directory.

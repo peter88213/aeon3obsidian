@@ -4,6 +4,10 @@
 
 ## Changelog
 
+### v1.0.4
+
+- Write the version number to stdout. 
+
 ### v1.0.3
 
 - Make sure that the item index doesn't contain items without a label.
