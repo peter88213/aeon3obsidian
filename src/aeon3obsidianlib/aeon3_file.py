@@ -80,9 +80,10 @@ class Aeon3File:
 
         #--- Create a relationships dictionary.
         for uid in jsonData['data']['relationships']['byId']:
-            refId = jsonData['data']['relationships']['byId'][uid]['reference']
-            objId = jsonData['data']['relationships']['byId'][uid]['object']
-            self.relationships[uid] = (refId, objId)
+            if uid in self.items:
+                refId = jsonData['data']['relationships']['byId'][uid]['reference']
+                objId = jsonData['data']['relationships']['byId'][uid]['object']
+                self.relationships[uid] = (refId, objId)
 
         #--- Get the narrative tree.
         self.narrative = jsonData['data'].get('narrative', self.narrative)

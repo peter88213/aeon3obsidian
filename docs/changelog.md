@@ -4,13 +4,17 @@
 
 ## Changelog
 
+### v1.0.5
+
+- Make sure that the relationships don't refer to items without a valid label.
+
 ### v1.0.4
 
 - Write the version number to stdout. 
 
 ### v1.0.3
 
-- Make sure that the item index doesn't contain items without a label.
+- Make sure that the item index doesn't contain items without a valid label.
 
 ### v1.0.2
 
