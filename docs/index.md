@@ -17,6 +17,8 @@ project and generates a set of Markdown documents.
 
 - [Python](https://www.python.org/) version 3.6+.
 
+**According to recent user feedback, the Aeon Timeline 3 file format has been changed, so this script might not work for you.**
+
 **Aeon Timeline 2 users:** A variant for Aeon Timeline 2 can be found [here](https://peter88213.github.io/aeon2obsidian/).
 
 ## Download and install {#download}
