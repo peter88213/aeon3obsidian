@@ -62,7 +62,7 @@ class Aeon3File:
         #--- Create a tag lookup dictionary.
         for uid in jsonData['data']['tags']:
             element = jsonData['data']['tags'][uid].strip()
-            self.tags[uid] = element
+            self.tags[uid] = element.replace('&', '\\&')
 
         #--- Create a data model and extend the labels dictionary.
         for uid in jsonData['data']['items']['byId']:
