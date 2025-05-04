@@ -5,6 +5,7 @@ For further information see https://github.com/peter88213/aeon3obsidian
 Published under the MIT License (https://opensource.org/licenses/mit-license.php)
 """
 import json
+import os
 from aeon3obsidianlib.aeon3_fop import scan_file
 from datetime import datetime
 from datetime import timedelta
@@ -45,53 +46,70 @@ class Aeon3File:
             self.labels[key] = value
 
         #--- Read the aeon file and get a JSON data structure.
+        print(f'Reading file "{os.path.normpath(self.filePath)}" ...')
         jsonPart = scan_file(self.filePath)
         jsonData = json.loads(jsonPart)
+
+        if not 'core' in jsonData:
+            raise ValueError('Error: JSON structure missing "core" key.')
+
+        print(f'Found "core" version {jsonData["core"].get("coreFileVersion", "Unknown")}.')
         labelText = {}
 
         #--- Create a labels dictionary for types and relationships.
-        for uid in jsonData['definitions']['types']['byId']:
-            item = jsonData['definitions']['types']['byId'][uid].get('label', '').strip()
+        for uid in jsonData['core']['definitions']['types']['byId']:
+            item = jsonData['core']['definitions']['types']['byId'][uid].get('label', '').strip()
             if item:
                 add_label(uid, item)
-        for uid in jsonData['definitions']['references']['byId']:
-            reference = jsonData['definitions']['references']['byId'][uid].get('label', '').strip()
+                print(f'Found item "{item}".')
+        for uid in jsonData['core']['definitions']['references']['byId']:
+            reference = jsonData['core']['definitions']['references']['byId'][uid].get('label', '').strip()
             if reference:
                 self.labels[uid] = reference
+                print(f'Found reference "{reference}".')
 
         #--- Create a tag lookup dictionary.
-        for uid in jsonData['data']['tags']:
-            element = jsonData['data']['tags'][uid].strip()
+        for uid in jsonData['core']['data']['tags']:
+            element = jsonData['core']['data']['tags'][uid].strip()
             self.tags[uid] = element.replace('&', '\\&')
 
         #--- Create a data model and extend the labels dictionary.
-        for uid in jsonData['data']['items']['byId']:
-            aeonItem = jsonData['data']['items']['byId'][uid]
+        for uid in jsonData['core']['data']['itemsById']:
+            aeonItem = jsonData['core']['data']['itemsById'][uid]
             aeonLabel = aeonItem.get('label', None)
             if aeonLabel is not None:
+                print(f'Processing "{aeonLabel}" ...')
                 add_label(uid, aeonLabel.strip())
-                self.items[uid] = self._get_item(aeonItem)
+                self.items[uid] = self._get_item(
+                    aeonItem,
+                    jsonData['core']['data']['itemDatesById'][uid],
+                    jsonData['collection']['relationshipIdsByItemId'][uid],
+                    )
 
         #--- Create an item index.
-        for uid in jsonData['data']['items']['allIdsForType']:
+        for uid in jsonData['core']['data']['itemOrderByType']:
             if uid in self.items:
-                itemUidList = jsonData['data']['items']['allIdsForType'][uid]
+                itemUidList = jsonData['core']['data']['itemOrderByType'][uid]
                 self.itemIndex[uid] = itemUidList
 
         #--- Create a relationships dictionary.
-        for uid in jsonData['data']['relationships']['byId']:
+        for uid in jsonData['core']['data']['relationshipsById']:
             if uid in self.items:
-                refId = jsonData['data']['relationships']['byId'][uid]['reference']
-                objId = jsonData['data']['relationships']['byId'][uid]['object']
+                refId = jsonData['core']['data']['relationshipsById'][uid]['reference']
+                objId = jsonData['core']['data']['relationshipsById'][uid]['object']
                 self.relationships[uid] = (refId, objId)
 
         #--- Get the narrative tree.
-        self.narrative = jsonData['data'].get('narrative', self.narrative)
+        narrative = jsonData['collection'].get('self.narrative', self.narrative)
 
         return 'Aeon 3 file successfully read.'
 
-    def _get_date(self, aeonItem):
-        timestamp = aeonItem['startDate'].get('timestamp', 'null')
+    def _get_date(self, itemDate):
+        startDate = itemDate.get('startDate', None)
+        if startDate is None:
+            return ''
+
+        timestamp = startDate.get('timestamp', 'null')
         if timestamp and timestamp != 'null':
             startDateTime = datetime.min + timedelta(seconds=timestamp)
             dateStr = date.isoformat(startDateTime)
@@ -99,9 +117,9 @@ class Aeon3File:
             dateStr = ''
         return dateStr
 
-    def _get_duration(self, aeonItem):
+    def _get_duration(self, itemDates):
         durationList = []
-        durationDict = aeonItem.get('duration', None)
+        durationDict = itemDates.get('duration', None)
         if durationDict:
             durations = list(durationDict)
             for unit in durations:
@@ -110,13 +128,15 @@ class Aeon3File:
         durationStr = ', '.join(durationList)
         return durationStr
 
-    def _get_item(self, aeonItem):
+    def _get_item(self, aeonItem, itemDate, relationships):
         """Return a dictionary with the relevant item properties."""
+
         item = {}
         item['shortLabel'] = aeonItem['shortLabel']
         item['summary'] = aeonItem['summary']
-        item['references'] = aeonItem['references']
-        item['children'] = aeonItem['children']
+        item['references'] = [r for r in relationships]
+        print(item['references'])
+        # item['children'] = aeonItem['children']
 
         # Read tags.
         tags = []
@@ -125,24 +145,32 @@ class Aeon3File:
             item['tags'] = tags
 
         # Read date/time/duration.
-        dateStr = self._get_date(aeonItem)
+
+        dateStr = self._get_date(itemDate)
         if dateStr:
             item['Date'] = dateStr
-        timeStr = self._get_time(aeonItem)
+            print(dateStr)
+        timeStr = self._get_time(itemDate)
         if timeStr:
             item['Time'] = timeStr
-        durationStr = self._get_duration(aeonItem)
+            print(timeStr)
+        durationStr = self._get_duration(itemDate)
         if durationStr:
             item['Duration'] = durationStr
+            print(durationStr)
 
         return item
 
-    def _get_time(self, aeonItem):
-        timestamp = aeonItem['startDate'].get('timestamp', 'null')
+    def _get_time(self, itemDate):
+        startDate = itemDate.get('startDate', None)
+        if startDate is None:
+            return ''
+
+        timestamp = startDate.get('timestamp', 'null')
         if timestamp and timestamp != 'null':
             startDateTime = datetime.min + timedelta(seconds=timestamp)
             timeStr = startDateTime.strftime('%X')
-            seconds = aeonItem['startDate'].get('second', 0)
+            seconds = itemDate['startDate'].get('second', 0)
             if not seconds:
                 h, m, _ = timeStr.split(':')
                 timeStr = ':'.join([h, m])
