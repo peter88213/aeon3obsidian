@@ -2,7 +2,7 @@
 
 Copyright (c) 2025 Peter Triesberger
 For further information see https://github.com/peter88213/aeon3obsidian
-Published under the MIT License (https://opensource.org/licenses/mit-license.php)
+License: GNU GPLv3 (https://www.gnu.org/licenses/gpl-3.0.en.html)
 """
 import os
 
@@ -14,11 +14,7 @@ class ObsidianFiles:
     def __init__(self, folderPath):
         """Set the Obsidian folder."""
         self.folderPath = folderPath
-        self.items = {}
-        self.labels = {}
-        self.itemIndex = {}
-        self.relationships = {}
-        self.narrative = {}
+        self.dataModel = None
 
     def write(self):
         """Create a set of Markdown files in the Obsidian folder.
@@ -26,7 +22,7 @@ class ObsidianFiles:
         Return a success message.
         """
         os.makedirs(self.folderPath, exist_ok=True)
-        for uid in self.items:
+        for uid in self.dataModel.items:
             title = self._strip_title(self.labels[uid])
             text = self._build_content(self.items[uid])
             self._write_file(f'{self.folderPath}/{title}.md', text)

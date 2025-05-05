@@ -5,7 +5,7 @@ this script "inlines" all modules imported from the pywriter package.
 
 Copyright (c) 2025 Peter Triesberger
 For further information see https://github.com/peter88213/PyWriter
-Published under the MIT License (https://opensource.org/licenses/mit-license.php)
+License: GNU GPLv3 (https://www.gnu.org/licenses/gpl-3.0.en.html)
 """
 import re
 import os

@@ -2,42 +2,37 @@
 
 Copyright (c) 2025 Peter Triesberger
 For further information see https://github.com/peter88213/aeon3obsidian
-Published under the MIT License (https://opensource.org/licenses/mit-license.php)
+License: GNU GPLv3 (https://www.gnu.org/licenses/gpl-3.0.en.html)
 """
-from datetime import date
-from datetime import datetime
-from datetime import timedelta
+import codecs
 import json
 import os
 
-from aeon3obsidianlib.aeon3_fop import scan_file
-from aeon3obsidianlib.aeon3obsidian_globals import DEBUG_MODE
+from aeon3obsidianlib.aeon3obsidian_globals import output
+from aeon3obsidianlib.at3_item import At3Item
+from aeon3obsidianlib.py_calendar import PyCalendar
 
 
 class Aeon3File:
 
     def __init__(self, filePath):
-        """Set the Aeon 3 project file path."""
         self.filePath = filePath
-        self.items = {}
+        self.dataModel = None
         self.labels = {}
         self.itemIndex = {}
         self.relationships = {}
-        self.tags = {}
+        self.allTags = {}
         self.narrative = {}
 
     def read(self):
         """Read the Aeon 3 project file.
         
-        Store the relevant data in the items dictionary.
-        Populate the labels dictionary.
-        Populate the itemIndex dictionary.
-        
+        Store the relevant data in the data model.
         Return a success message.
         """
 
-        def add_label(key, value):
-            """Add an entry to the labels dictionary, handling multiple labels."""
+        def get_unique_label(key, value):
+            # Add an entry to the labels dictionary, handling multiple labels.
             if value in labelText:
                 print(f'Multiple label: {value}')
                 number = labelText[value] + 1
@@ -46,14 +41,12 @@ class Aeon3File:
             else:
                 labelText[value] = 0
             self.labels[key] = value
+            return value
 
         #--- Read the aeon file and get a JSON data structure.
         print(f'Reading file "{os.path.normpath(self.filePath)}" ...')
-        jsonPart = scan_file(self.filePath)
+        jsonPart = self._get_json()
         jsonData = json.loads(jsonPart)
-
-        if not 'core' in jsonData:
-            raise ValueError('Error: JSON structure missing "core" key.')
 
         print(f'Found "core" version {jsonData["core"].get("coreFileVersion", "Unknown")}.')
         labelText = {}
@@ -62,41 +55,48 @@ class Aeon3File:
         for uid in jsonData['core']['definitions']['types']['byId']:
             item = jsonData['core']['definitions']['types']['byId'][uid].get('label', '').strip()
             if item:
-                add_label(uid, item)
-                self._output(f'Found item "{item}".')
+                get_unique_label(uid, item)
+                output(f'Found item "{item}".')
         for uid in jsonData['core']['definitions']['references']['byId']:
             reference = jsonData['core']['definitions']['references']['byId'][uid].get('label', '').strip()
             if reference:
                 self.labels[uid] = reference
-                self._output(f'Found reference "{reference}".')
+                output(f'Found reference "{reference}".')
 
         #--- Create a tag lookup dictionary.
         for uid in jsonData['core']['data']['tags']:
             element = jsonData['core']['data']['tags'][uid].strip()
-            self.tags[uid] = element.replace('&', '\\&')
+            self.allTags[uid] = element.replace('&', '\\&')
 
         #--- Create a data model and extend the labels dictionary.
+        calendar = PyCalendar()
         for uid in jsonData['core']['data']['itemsById']:
-            aeonItem = jsonData['core']['data']['itemsById'][uid]
-            aeonLabel = aeonItem.get('label', None)
+            jsonItem = jsonData['core']['data']['itemsById'][uid]
+            aeonLabel = jsonItem.get('label', None)
             if aeonLabel is not None:
-                self._output(f'Processing "{aeonLabel}" ...')
-                add_label(uid, aeonLabel.strip())
-                self.items[uid] = self._get_item(
-                    aeonItem,
+                uniqueLabel = get_unique_label(uid, aeonLabel.strip())
+                output(f'Processing "{uniqueLabel}" ...')
+                self.dataModel.items[uid] = At3Item(
+                    uid,
+                    calendar,
+                    uniqueLabel,
+                    )
+                self.dataModel.items[uid].set_data(
+                    jsonItem,
+                    self.allTags,
                     jsonData['core']['data']['itemDatesById'][uid],
                     jsonData['collection']['relationshipIdsByItemId'][uid],
                     )
 
         #--- Create an item index.
         for uid in jsonData['core']['data']['itemOrderByType']:
-            if uid in self.items:
+            if uid in self.dataModel.items:
                 itemUidList = jsonData['core']['data']['itemOrderByType'][uid]
                 self.itemIndex[uid] = itemUidList
 
         #--- Create a relationships dictionary.
         for uid in jsonData['core']['data']['relationshipsById']:
-            if uid in self.items:
+            if uid in self.dataModel.items:
                 refId = jsonData['core']['data']['relationshipsById'][uid]['reference']
                 objId = jsonData['core']['data']['relationshipsById'][uid]['object']
                 self.relationships[uid] = (refId, objId)
@@ -106,80 +106,34 @@ class Aeon3File:
 
         return 'Aeon 3 file successfully read.'
 
-    def _get_date(self, itemDate):
-        startDate = itemDate.get('startDate', None)
-        if startDate is None:
-            return ''
+    def _get_json(self):
+        """Read and scan the project file.
+        
+        Return a string containing the JSON part.
+        """
+        with open(self.filePath, 'rb') as f:
+            binInput = f.read()
 
-        timestamp = startDate.get('timestamp', 'null')
-        if timestamp and timestamp != 'null':
-            startDateTime = datetime.min + timedelta(seconds=timestamp)
-            dateStr = date.isoformat(startDateTime)
-        else:
-            dateStr = ''
-        return dateStr
+        # JSON part: all characters between the first and last curly bracket.
+        chrData = []
+        opening = ord('{')
+        closing = ord('}')
+        level = 0
+        for c in binInput:
+            if c == opening:
+                level += 1
+            if level > 0:
+                chrData.append(c)
+                if c == closing:
+                    level -= 1
+                    if level == 0:
+                        break
+        if level != 0:
+            raise ValueError('Error: Corrupted data.')
 
-    def _get_duration(self, itemDates):
-        durationList = []
-        durationDict = itemDates.get('duration', None)
-        if durationDict:
-            durations = list(durationDict)
-            for unit in durations:
-                if durationDict[unit]:
-                    durationList.append(f'{durationDict[unit]} {unit}')
-        durationStr = ', '.join(durationList)
-        return durationStr
+        jsonStr = codecs.decode(bytes(chrData), encoding='utf-8')
+        if not jsonStr:
+            raise ValueError('Error: No JSON part found.')
 
-    def _get_item(self, aeonItem, itemDate, relationships):
-        """Return a dictionary with the relevant item properties."""
+        return jsonStr
 
-        item = {}
-        item['shortLabel'] = aeonItem['shortLabel']
-        item['summary'] = aeonItem['summary']
-        item['references'] = [r for r in relationships]
-        self._output(item['references'])
-        # item['children'] = aeonItem['children']
-
-        # Read tags.
-        tags = []
-        for uid in aeonItem['tags']:
-            tags.append(f"#{self.tags[uid].strip().replace(' ','_')}")
-            item['tags'] = tags
-
-        # Read date/time/duration.
-
-        dateStr = self._get_date(itemDate)
-        if dateStr:
-            item['Date'] = dateStr
-            self._output(dateStr)
-        timeStr = self._get_time(itemDate)
-        if timeStr:
-            item['Time'] = timeStr
-            self._output(timeStr)
-        durationStr = self._get_duration(itemDate)
-        if durationStr:
-            item['Duration'] = durationStr
-            self._output(durationStr)
-
-        return item
-
-    def _get_time(self, itemDate):
-        startDate = itemDate.get('startDate', None)
-        if startDate is None:
-            return ''
-
-        timestamp = startDate.get('timestamp', 'null')
-        if timestamp and timestamp != 'null':
-            startDateTime = datetime.min + timedelta(seconds=timestamp)
-            timeStr = startDateTime.strftime('%X')
-            seconds = itemDate['startDate'].get('second', 0)
-            if not seconds:
-                h, m, _ = timeStr.split(':')
-                timeStr = ':'.join([h, m])
-        else:
-            timeStr = ''
-        return timeStr
-
-    def _output(self, text):
-        if DEBUG_MODE:
-            print(text)

@@ -60,6 +60,7 @@ In case of doubt, please start the *aeon3obsidian.py* script from the text conso
 
 ## License
 
-This extension is distributed under the [MIT
-License](http://www.opensource.org/licenses/mit-license.php).
+This is Open Source software, and *aeon3obsidian* is licensed under GPLv3. See the
+[GNU General Public License website](https://www.gnu.org/licenses/gpl-3.0.en.html) for more
+details, or consult the [LICENSE](https://github.com/peter88213/aeon3obsidian/blob/main/LICENSE) file.
 
