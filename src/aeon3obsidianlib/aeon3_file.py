@@ -4,12 +4,14 @@ Copyright (c) 2025 Peter Triesberger
 For further information see https://github.com/peter88213/aeon3obsidian
 Published under the MIT License (https://opensource.org/licenses/mit-license.php)
 """
-import json
-import os
-from aeon3obsidianlib.aeon3_fop import scan_file
+from datetime import date
 from datetime import datetime
 from datetime import timedelta
-from datetime import date
+import json
+import os
+
+from aeon3obsidianlib.aeon3_fop import scan_file
+from aeon3obsidianlib.aeon3obsidian_globals import DEBUG_MODE
 
 
 class Aeon3File:
@@ -61,12 +63,12 @@ class Aeon3File:
             item = jsonData['core']['definitions']['types']['byId'][uid].get('label', '').strip()
             if item:
                 add_label(uid, item)
-                print(f'Found item "{item}".')
+                self._output(f'Found item "{item}".')
         for uid in jsonData['core']['definitions']['references']['byId']:
             reference = jsonData['core']['definitions']['references']['byId'][uid].get('label', '').strip()
             if reference:
                 self.labels[uid] = reference
-                print(f'Found reference "{reference}".')
+                self._output(f'Found reference "{reference}".')
 
         #--- Create a tag lookup dictionary.
         for uid in jsonData['core']['data']['tags']:
@@ -78,7 +80,7 @@ class Aeon3File:
             aeonItem = jsonData['core']['data']['itemsById'][uid]
             aeonLabel = aeonItem.get('label', None)
             if aeonLabel is not None:
-                print(f'Processing "{aeonLabel}" ...')
+                self._output(f'Processing "{aeonLabel}" ...')
                 add_label(uid, aeonLabel.strip())
                 self.items[uid] = self._get_item(
                     aeonItem,
@@ -135,7 +137,7 @@ class Aeon3File:
         item['shortLabel'] = aeonItem['shortLabel']
         item['summary'] = aeonItem['summary']
         item['references'] = [r for r in relationships]
-        print(item['references'])
+        self._output(item['references'])
         # item['children'] = aeonItem['children']
 
         # Read tags.
@@ -149,15 +151,15 @@ class Aeon3File:
         dateStr = self._get_date(itemDate)
         if dateStr:
             item['Date'] = dateStr
-            print(dateStr)
+            self._output(dateStr)
         timeStr = self._get_time(itemDate)
         if timeStr:
             item['Time'] = timeStr
-            print(timeStr)
+            self._output(timeStr)
         durationStr = self._get_duration(itemDate)
         if durationStr:
             item['Duration'] = durationStr
-            print(durationStr)
+            self._output(durationStr)
 
         return item
 
@@ -178,3 +180,6 @@ class Aeon3File:
             timeStr = ''
         return timeStr
 
+    def _output(self, text):
+        if DEBUG_MODE:
+            print(text)
