@@ -1,6 +1,18 @@
 The *aeon3obsidian* Python script extracts the items of an [Aeon Timeline 3](https://timeline.app/) 
 project and generates a set of Markdown documents.
 
+---
+
+## Note
+
+This script is based on a reverse-engineered *.aeon* project file created
+with *Aeon Timeline* version 3.4.20. The file is marked as version 15. 
+
+When the application is updated, the file format may change and this tool 
+may no longer work for you. Please consider it experimental.
+
+---
+
 ![Screenshot](Screenshots/screen01.png)
 
 ## Features
@@ -16,8 +28,6 @@ project and generates a set of Markdown documents.
 ## Requirements
 
 - [Python](https://www.python.org/) version 3.6+.
-
-**According to recent user feedback, the Aeon Timeline 3 file format has been changed, so this script might not work for you.**
 
 **Aeon Timeline 2 users:** A variant for Aeon Timeline 2 can be found [here](https://peter88213.github.io/aeon2obsidian/).
 
