@@ -1,7 +1,7 @@
 The *aeon3obsidian* Python script extracts the items of an [Aeon Timeline 3](https://timeline.app/) 
 project and generates a set of Markdown documents.
 
-![Screenshot](Screenshots/screen01.png)
+![Screenshot](docs/Screenshots/screen01.png)
 
 ## Features
 

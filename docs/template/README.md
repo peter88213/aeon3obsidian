@@ -13,7 +13,7 @@ may no longer work for you. Please consider it experimental.
 
 ---
 
-![Screenshot](Screenshots/screen01.png)
+![Screenshot](docs/Screenshots/screen01.png)
 
 ## Features
 
