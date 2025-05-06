@@ -11,4 +11,4 @@ class Aeon3Data:
     def __init__(self):
         self.items = {}
         self.itemIndex = {}
-        self.narrativeTree = {}
+        self.narrative = {}

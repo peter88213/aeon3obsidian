@@ -21,21 +21,19 @@ class ObsidianFiles:
         Return a success message.
         """
         os.makedirs(self.folderPath, exist_ok=True)
+
+        #--- Create one file per item.
         for uid in self.data.items:
             item = self.data.items[uid]
             title = self._sanitize_title(item.label)
-            text = self._build_content(item)
+            text = self._get_markdown_content(item)
             self._write_file(f'{self.folderPath}/{title}.md', text)
-        # self._build_index()
-        # self._build_narrative()
+
+        self._create_index_page()
+        self._create_narrative_page()
         return 'Obsidian files successfully written.'
 
-    def _build_content(self, item):
-        """Return a string with the Markdown file content.
-        
-        Positional arguments:
-            item: dictionary of Aeon item properties.
-        """
+    def _get_markdown_content(self, item):
         lines = []
         if item.shortLabel:
             lines.append(item.shortLabel)
@@ -69,28 +67,21 @@ class ObsidianFiles:
             lines.append(childrenStr)
         return '\n\n'.join(lines)
 
-    def _build_index(self):
-        """Create index pages."""
+    def _create_index_page(self):
         mainIndexlines = []
-        for uid in self.itemIndex:
-            itemType = f'_{self._sanitize_title(self.labels[uid])}'
+        for itemType in self.data.itemIndex:
             mainIndexlines.append(f'- [[{itemType}]]')
-            itemUidList = self.itemIndex[uid]
-
-            # Create an index file with the items of the type.
             lines = []
-            for itemUid in itemUidList:
-                itemLabel = self._sanitize_title(self.labels[itemUid])
+            for itemLabel in self.data.itemIndex[itemType]:
                 lines.append(f'- [[{itemLabel}]]')
             text = '\n'.join(lines)
             self._write_file(f'{self.folderPath}/{itemType}.md', text)
-
-        # Create a main index file with the types.
         text = '\n'.join(mainIndexlines)
         self._write_file(f'{self.folderPath}/__index.md', text)
 
-    def _build_narrative(self):
-        """Create a page with the narrative tree."""
+    def _create_narrative_page(self):
+
+        return
 
         def get_branch(root, level):
             level += 1
@@ -102,7 +93,7 @@ class ObsidianFiles:
                 get_branch(branch, level)
 
         lines = []
-        get_branch(self.narrative, 1)
+        get_branch(self.data.narrative, 1)
         text = '\n\n'.join(lines)
         self._write_file(f'{self.folderPath}/__narrative.md', text)
 
