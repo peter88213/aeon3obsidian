@@ -77,11 +77,9 @@ class ObsidianFiles:
             text = '\n'.join(lines)
             self._write_file(f'{self.folderPath}/{itemType}.md', text)
         text = '\n'.join(mainIndexlines)
-        self._write_file(f'{self.folderPath}/__index.md', text)
+        self._write_file(f'{self.folderPath}/__Index.md', text)
 
     def _create_narrative_page(self):
-
-        return
 
         def get_branch(root, level):
             level += 1
@@ -93,9 +91,9 @@ class ObsidianFiles:
                 get_branch(branch, level)
 
         lines = []
-        get_branch(self.data.narrative, 1)
+        # get_branch(self.data.narrative, 1)
         text = '\n\n'.join(lines)
-        self._write_file(f'{self.folderPath}/__narrative.md', text)
+        self._write_file(f'{self.folderPath}/__Narrative.md', text)
 
     def _sanitize_tag(self, tag):
         # Return tag with non-alphanumeric characters replaced.
