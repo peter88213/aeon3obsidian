@@ -34,60 +34,21 @@ class Aeon3File:
 
         print(f'Found file version: "{jsonData["core"].get("coreFileVersion", "Unknown")}".')
 
-        #--- Create an item type lookup dictionary.
-        itemTypeLookup = {}
-        for itemTypeUid in jsonData['core']['definitions']['types']['byId']:
-            itemType = jsonData['core']['definitions']['types']['byId'][itemTypeUid].get('label', '').strip()
-            itemTypeLookup[itemTypeUid] = itemType
-            output(f'Found item type "{itemType}".')
+        #--- Create lookup dictionaries (labels by UID).
+        itemTypeLookup = self._get_item_type_lookup(jsonData)
+        itemLabelLookup = self._get_item_label_lookup(jsonData)
+        relationshipTypeLookup = self._get_relationship_type_lookup(jsonData)
+        tagLookup = self._get_tag_lookup(jsonData)
+        propertyTypeLookup = self._get_property_type_lookup(jsonData)
+        propertyEnumLookup = self._get_property_enum_lookup(jsonData)
 
-        #--- Create an item label lookup dictionary with unique labels.
-        itemLabelLookup = {}
-        for itemUid in jsonData['core']['data']['itemsById']:
-            if not jsonData['collection']['allItemIds'][itemUid]:
-                # item might be deleted
-                continue
-
-            jsonItem = jsonData['core']['data']['itemsById'][itemUid]
-            aeonLabel = jsonItem.get('label', None)
-            if aeonLabel is not None:
-                uniqueLabel = self._get_unique_label(aeonLabel.strip())
-                itemLabelLookup[itemUid] = uniqueLabel
-                output(f'Found item "{uniqueLabel}" ...')
-
-        #--- Create a relationship type lookup dictionary.
-        relationshipTypeLookup = {}
-        for relationshipTypeUid in jsonData['core']['definitions']['references']['byId']:
-            reference = jsonData['core']['definitions']['references']['byId'][relationshipTypeUid]['label']
-            relationshipTypeLookup[relationshipTypeUid] = reference.strip()
-            output(f'Found relationship type "{reference}".')
-
-        #--- Create a tag lookup dictionary.
-        tagLookup = {}
-        for tagUid in jsonData['core']['data']['tags']:
-            tagName = jsonData['core']['data']['tags'][tagUid]
-            tagLookup[tagUid] = tagName.strip()
-            output(f'Found tag "{tagName}".')
-
-        #--- Create property lookup dictionaries.
-        propertyTypeLookup = {}
-        propertyEnumLookup = {}
-        for propertyTypeUid in jsonData['core']['definitions']['properties']['byId']:
-            propertyType = jsonData['core']['definitions']['properties']['byId'][propertyTypeUid]
-            propertyTypeLabel = propertyType['label']
-            propertyTypeLookup[propertyTypeUid] = propertyTypeLabel.strip()
-            output(f'Found property type "{propertyTypeLabel}".')
-            for enumUid in propertyType['allowed']:
-                enumLabel = propertyType['allowed'][enumUid]['label']
-                propertyEnumLookup[enumUid] = enumLabel
-
-        #--- Instantiate the item objects of the data model.
+        #--- Build the items of the data model.
         calendar = PyCalendar()
         for itemUid in itemLabelLookup:
             uniqueLabel = itemLabelLookup[itemUid]
             output(f'Processing "{uniqueLabel}" ...')
 
-            # Get item properties.
+            # Get properties.
             jsonItem = jsonData['core']['data']['itemsById'][itemUid]
             shortLabel = jsonItem.get('shortLabel', None)
             summary = jsonItem.get('summary', None)
@@ -156,11 +117,33 @@ class Aeon3File:
 
         return 'Aeon 3 file successfully read.'
 
+    def _get_item_label_lookup(self, jsonData):
+        # Return a lookup dictionary with unique item labels by UID.
+        itemLabelLookup = {}
+        for itemUid in jsonData['core']['data']['itemsById']:
+            if not jsonData['collection']['allItemIds'][itemUid]:
+                # item might be deleted
+                continue
+
+            jsonItem = jsonData['core']['data']['itemsById'][itemUid]
+            aeonLabel = jsonItem.get('label', None)
+            if aeonLabel is not None:
+                uniqueLabel = self._get_unique_label(aeonLabel.strip())
+                itemLabelLookup[itemUid] = uniqueLabel
+                output(f'Found item "{uniqueLabel}" ...')
+        return itemLabelLookup
+
+    def _get_item_type_lookup(self, jsonData):
+        # Return a lookup dictionary with item type labels by UID.
+        itemTypeLookup = {}
+        for itemTypeUid in jsonData['core']['definitions']['types']['byId']:
+            itemType = jsonData['core']['definitions']['types']['byId'][itemTypeUid].get('label', '').strip()
+            itemTypeLookup[itemTypeUid] = itemType
+            output(f'Found item type "{itemType}".')
+        return itemTypeLookup
+
     def _get_json_string(self):
-        """Read and scan the project file.
-        
-        Return a string containing the JSON part.
-        """
+        # Return a string containing the JSON part of the aeon file.
         with open(self.filePath, 'rb') as f:
             binInput = f.read()
 
@@ -186,6 +169,45 @@ class Aeon3File:
             raise ValueError('Error: No JSON part found.')
 
         return jsonStr
+
+    def _get_property_enum_lookup(self, jsonData):
+        # Return a lookup dictionary with allowed property enum labels by UID.
+        propertyEnumLookup = {}
+        for propertyTypeUid in jsonData['core']['definitions']['properties']['byId']:
+            propertyType = jsonData['core']['definitions']['properties']['byId'][propertyTypeUid]
+            for enumUid in propertyType['allowed']:
+                enumLabel = propertyType['allowed'][enumUid]['label']
+                propertyEnumLookup[enumUid] = enumLabel
+                output(f'Found property enum "{enumLabel}".')
+        return propertyEnumLookup
+
+    def _get_property_type_lookup(self, jsonData):
+        # Return a lookup dictionary with property type labels by UID.
+        propertyTypeLookup = {}
+        for propertyTypeUid in jsonData['core']['definitions']['properties']['byId']:
+            propertyType = jsonData['core']['definitions']['properties']['byId'][propertyTypeUid]
+            propertyTypeLabel = propertyType['label']
+            propertyTypeLookup[propertyTypeUid] = propertyTypeLabel.strip()
+            output(f'Found property type "{propertyTypeLabel}".')
+        return propertyTypeLookup
+
+    def _get_relationship_type_lookup(self, jsonData):
+        # Return a lookup dictionary with relationship type labels by UID.
+        relationshipTypeLookup = {}
+        for relationshipTypeUid in jsonData['core']['definitions']['references']['byId']:
+            reference = jsonData['core']['definitions']['references']['byId'][relationshipTypeUid]['label']
+            relationshipTypeLookup[relationshipTypeUid] = reference.strip()
+            output(f'Found relationship type "{reference}".')
+        return relationshipTypeLookup
+
+    def _get_tag_lookup(self, jsonData):
+        # Return a lookup dictionary with tags by UID.
+        tagLookup = {}
+        for tagUid in jsonData['core']['data']['tags']:
+            tagName = jsonData['core']['data']['tags'][tagUid]
+            tagLookup[tagUid] = tagName.strip()
+            output(f'Found tag "{tagName}".')
+        return tagLookup
 
     def _get_unique_label(self, aeonLabel):
         # Return a unique item label.
