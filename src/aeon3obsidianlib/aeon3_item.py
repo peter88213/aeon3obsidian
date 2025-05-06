@@ -45,8 +45,8 @@ class Aeon3Item:
             output(f' - duration      : {self.duration}')
         if self.relationships:
             output(' - relationships :')
-            for object, reference in self.relationships:
-                output(f'    - {reference} : {object}')
+            for target, reference in self.relationships:
+                output(f'    - {reference} : {target}')
         if self.children:
             output(' - children      :')
             for child, reference in self.children:

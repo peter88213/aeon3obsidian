@@ -55,8 +55,8 @@ class ObsidianFiles:
             lines.append(item.duration)
         if item.relationships:
             relationshipStr = ''
-            for object, reference in item.relationships:
-                relationshipStr = f'{relationshipStr}- {reference} : [[{self._sanitize_title(object)}]]\n'
+            for target, reference in item.relationships:
+                relationshipStr = f'{relationshipStr}- {reference} : [[{self._sanitize_title(target)}]]\n'
             lines.append(relationshipStr)
         if item.children:
             childrenStr = ''
