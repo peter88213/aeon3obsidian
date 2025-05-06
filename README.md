@@ -7,11 +7,13 @@ project and generates a set of Markdown documents.
 
 - Creates a page for each *aeon* item. 
 - Creates links between the pages according to the relationships. 
+- Creates links to child items. 
+- Inserts custom properties, if any. 
 - Inserts tags, if any. 
 - Inserts date/time (Gregorian date, "A.D." only) for the event-based pages. 
 - Inserts duration (as set in Aeon) for the event-based pages. 
-- The `__index.md` file holds the table of contents on the top level. 
-- The `__narrative.md` file holds the table of contents of the narrative. 
+- The `__Index.md` file holds the table of contents on the top level. 
+- The `__Narrative.md` file holds the table of contents of the narrative. 
 
 ## Requirements
 
