@@ -6,7 +6,7 @@ License: GNU GPLv3 (https://www.gnu.org/licenses/gpl-3.0.en.html)
 """
 
 
-class Timeline:
+class Aeon3Data:
 
     def __init__(self):
         self.items = {}

@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-"""Convert Aeon Timeline 3 project data to Obsidian Markdown fileset. 
+"""Convert Aeon Aeon3Data 3 project data to Obsidian Markdown fileset. 
 
 Version @release
 Requires Python 3.6+
@@ -26,9 +26,9 @@ GNU General Public License for more details.
 import os
 import sys
 
+from aeon3obsidianlib.aeon3_data import Aeon3Data
 from aeon3obsidianlib.aeon3_file import Aeon3File
 from aeon3obsidianlib.obsidian_files import ObsidianFiles
-from aeon3obsidianlib.timeline import Timeline
 
 
 def main(sourcePath):
@@ -41,7 +41,7 @@ def main(sourcePath):
 
     # Create an Aeon 3 file object and read the data.
     aeon3File = Aeon3File(sourcePath)
-    aeon3File.timeline = Timeline()
+    aeon3File.data = Aeon3Data()
     print(aeon3File.read())
 
     # Define the output directory.
@@ -51,7 +51,7 @@ def main(sourcePath):
 
     # Create an Obsidian fileset object and write the data.
     obsidianFiles = ObsidianFiles(obsidianFolder)
-    obsidianFiles.timeline = aeon3File.timeline
+    obsidianFiles.data = aeon3File.data
     # print(obsidianFiles.write())
 
 

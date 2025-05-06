@@ -9,7 +9,7 @@ import json
 import os
 
 from aeon3obsidianlib.aeon3obsidian_globals import output
-from aeon3obsidianlib.at3_item import At3Item
+from aeon3obsidianlib.aeon3_item import Aeon3Item
 from aeon3obsidianlib.py_calendar import PyCalendar
 
 
@@ -17,7 +17,7 @@ class Aeon3File:
 
     def __init__(self, filePath):
         self.filePath = filePath
-        self.timeline = None
+        self.data = None
         self._labelCounts = {}
 
     def read(self):
@@ -105,7 +105,7 @@ class Aeon3File:
             durationStr = calendar.get_duration_str(itemDate)
 
             # Instantiate the item object.
-            self.timeline.items[itemUid] = At3Item(
+            self.data.items[itemUid] = Aeon3Item(
                 uniqueLabel,
                 shortLabel=shortLabel,
                 summary=summary,
@@ -115,7 +115,7 @@ class Aeon3File:
                 durationStr=durationStr,
                 relationships=relationships,
                 )
-            self.timeline.items[itemUid].write_to_console()
+            self.data.items[itemUid].write_to_console()
 
         #--- Create an item index.
         output('Generating item index ...')
@@ -129,7 +129,7 @@ class Aeon3File:
                 itemLabel = itemLabelLookup[itemUid]
                 itemIndex[itemType].append(itemLabel)
                 output(f'  * Item: {itemLabel}')
-        self.timeline.itemIndex = itemIndex
+        self.data.itemIndex = itemIndex
 
         #--- Get the narrative tree.
 

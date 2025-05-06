@@ -14,7 +14,7 @@ class ObsidianFiles:
     def __init__(self, folderPath):
         """Set the Obsidian folder."""
         self.folderPath = folderPath
-        self.timeline = None
+        self.data = None
 
     def write(self):
         """Create a set of Markdown files in the Obsidian folder.
@@ -22,7 +22,7 @@ class ObsidianFiles:
         Return a success message.
         """
         os.makedirs(self.folderPath, exist_ok=True)
-        for uid in self.timeline.items:
+        for uid in self.data.items:
             title = self._strip_title(self.labels[uid])
             text = self._build_content(self.items[uid])
             self._write_file(f'{self.folderPath}/{title}.md', text)
