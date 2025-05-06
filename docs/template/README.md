@@ -39,7 +39,7 @@ may no longer work for you. Please consider it experimental.
 
 - Unpack the zipfile and copy *aeon3obsidian.py* whereever you want.
 
-[Changelog](changelog)
+[Changelog](docs/changelog)
 
 ## Usage
 
