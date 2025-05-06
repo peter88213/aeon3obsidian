@@ -17,7 +17,7 @@ class Aeon3File:
 
     def __init__(self, filePath):
         self.filePath = filePath
-        self.dataModel = None
+        self.timeline = None
         self._labelCounts = {}
 
     def read(self):
@@ -106,7 +106,7 @@ class Aeon3File:
             durationStr = calendar.get_duration_str(itemDate)
 
             # Instantiate the item object.
-            self.dataModel.items[itemUid] = At3Item(
+            self.timeline.items[itemUid] = At3Item(
                 uniqueLabel,
                 shortLabel=shortLabel,
                 summary=summary,
@@ -129,7 +129,7 @@ class Aeon3File:
                 itemLabel = itemLabelLookup[itemUid]
                 itemIndex[itemType].append(itemLabel)
                 output(f'  * Item: {itemLabel}')
-        self.dataModel.itemIndex = itemIndex
+        self.timeline.itemIndex = itemIndex
 
         #--- Get the narrative tree.
 

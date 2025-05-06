@@ -41,7 +41,7 @@ def main(sourcePath):
 
     # Create an Aeon 3 file object and read the data.
     aeon3File = Aeon3File(sourcePath)
-    aeon3File.dataModel = Timeline()
+    aeon3File.timeline = Timeline()
     print(aeon3File.read())
 
     # Define the output directory.
@@ -51,7 +51,7 @@ def main(sourcePath):
 
     # Create an Obsidian fileset object and write the data.
     obsidianFiles = ObsidianFiles(obsidianFolder)
-    obsidianFiles.dataModel = aeon3File.dataModel
+    obsidianFiles.timeline = aeon3File.timeline
     # print(obsidianFiles.write())
 
 
