@@ -45,7 +45,7 @@ class Aeon3File:
         itemLabelLookup = {}
         for itemUid in jsonData['core']['data']['itemsById']:
             if not jsonData['collection']['allItemIds'][itemUid]:
-                # this item is deleted
+                # item might be deleted
                 continue
 
             jsonItem = jsonData['core']['data']['itemsById'][itemUid]
@@ -58,16 +58,15 @@ class Aeon3File:
         #--- Create a relationship type lookup dictionary.
         relationshipTypeLookup = {}
         for relationshipTypeUid in jsonData['core']['definitions']['references']['byId']:
-            reference = jsonData['core']['definitions']['references']['byId'][relationshipTypeUid].get('label', '').strip()
-            relationshipTypeLookup[relationshipTypeUid] = reference
+            reference = jsonData['core']['definitions']['references']['byId'][relationshipTypeUid]['label']
+            relationshipTypeLookup[relationshipTypeUid] = reference.strip()
             output(f'Found relationship type "{reference}".')
 
         #--- Create a tag lookup dictionary.
         tagLookup = {}
         for tagUid in jsonData['core']['data']['tags']:
-            tagName = jsonData['core']['data']['tags'][tagUid].strip()
-            tagName = tagName.replace('&', '\\&')
-            tagLookup[tagUid] = tagName
+            tagName = jsonData['core']['data']['tags'][tagUid]
+            tagLookup[tagUid] = tagName.strip()
             output(f'Found tag "{tagName}".')
 
         #--- Instantiate the item objects of the data model.
@@ -82,14 +81,14 @@ class Aeon3File:
             summary = jsonItem.get('summary', None)
             tags = []
             for tagUid in jsonItem['tags']:
-                tags.append(self._sanitize_tag(tagLookup[tagUid]))
+                tags.append(tagLookup[tagUid])
 
             # Get relationships.
             relationships = []
             jsonRelationshipDict = jsonData['collection']['relationshipIdsByItemId'][itemUid]
             for relUid in jsonRelationshipDict:
                 if not jsonRelationshipDict[relUid]:
-                    # target is deleted
+                    # target might be deleted
                     continue
 
                 relationship = jsonData['core']['data']['relationshipsById'][relUid]
@@ -116,6 +115,7 @@ class Aeon3File:
                 durationStr=durationStr,
                 relationships=relationships,
                 )
+            self.timeline.items[itemUid].write_to_console()
 
         #--- Create an item index.
         output('Generating item index ...')
@@ -134,9 +134,6 @@ class Aeon3File:
         #--- Get the narrative tree.
 
         return 'Aeon 3 file successfully read.'
-
-    def _sanitize_tag(self, label):
-        return label.strip().replace(' ', '_')
 
     def _get_json_string(self):
         """Read and scan the project file.

@@ -96,6 +96,9 @@ class ObsidianFiles:
         text = '\n\n'.join(lines)
         self._write_file(f'{self.folderPath}/__narrative.md', text)
 
+    def _sanitize_tag(self, tag):
+        return tag.strip().replace(' ', '_').replace('&', '\\&')
+
     def _strip_title(self, title):
         """Return title with characters removed that must not appear in a file name."""
         for c in self.FORBIDDEN_CHARACTERS:

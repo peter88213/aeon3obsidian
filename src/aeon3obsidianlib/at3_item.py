@@ -23,36 +23,31 @@ class At3Item:
             children=[],
             ):
 
-        #--- Set properties.
         self.label = label
         self.shortLabel = shortLabel
-        output(f' - shortLabel    : {self.shortLabel}')
         self.summary = summary
-        output(f' - summary       : {self.summary}')
         self.tags = tags
+        self.date = dateStr
+        self.time = timeStr
+        self.duration = durationStr
+        self.relationships = relationships
+        self.children = children
+
+    def write_to_console(self):
+        output(f' - shortLabel    : {self.shortLabel}')
+        output(f' - summary       : {self.summary}')
         output(f' - tags          : {self.tags}')
-
-        #--- Set date/time/duration.
-        if dateStr:
-            self.date = dateStr
-            output(f' - date          : {dateStr}')
-        if timeStr:
-            self.time = timeStr
-            output(f' - time          : {timeStr}')
-        if durationStr:
-            self.duration = durationStr
-            output(f' - duration      : {durationStr}')
-
-        #--- Set relationships.
-        if relationships:
+        if self.date:
+            output(f' - date          : {self.date}')
+        if self.time:
+            output(f' - time          : {self.time}')
+        if self.duration:
+            output(f' - duration      : {self.duration}')
+        if self.relationships:
             output(' - relationships :')
-            self.relationships = relationships
             for object, reference in self.relationships:
                 output(f'    - {reference} : {object}')
-
-        #--- Set children.
-        if children:
+        if self.children:
             output(' - children      :')
-            self.children = children
             for child, reference in self.children:
                 output(f'    - {reference} : {child}')
