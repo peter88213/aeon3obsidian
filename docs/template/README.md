@@ -33,7 +33,7 @@ may no longer work for you. Please consider it experimental.
 
 **Aeon Timeline 2 users:** A variant for Aeon Timeline 2 can be found [here](https://peter88213.github.io/aeon2obsidian/).
 
-## Download and install {#download}
+## Download and install
 
 [Download the latest release (version 0.99.0)](https://raw.githubusercontent.com/peter88213/aeon3obsidian/main/dist/aeon3obsidian_v0.99.0.zip)
 
