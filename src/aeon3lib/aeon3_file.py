@@ -84,6 +84,7 @@ class Aeon3File:
             jsonChildrenDict = jsonData['core']['data']['superAndChildOrderById'][itemUid]
             for childUid in jsonChildrenDict['childOrder']:
                 if not childUid in itemLabelLookup:
+                    # child might be deleted
                     continue
 
                 children.append(itemLabelLookup[childUid])
