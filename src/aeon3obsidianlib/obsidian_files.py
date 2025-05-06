@@ -5,11 +5,10 @@ For further information see https://github.com/peter88213/aeon3obsidian
 License: GNU GPLv3 (https://www.gnu.org/licenses/gpl-3.0.en.html)
 """
 import os
+import re
 
 
 class ObsidianFiles:
-    FORBIDDEN_CHARACTERS = ('\\', '/', ':', '*', '?', '"', '<', '>', '|')
-    # set of characters that filenames cannot contain
 
     def __init__(self, folderPath):
         """Set the Obsidian folder."""
@@ -103,12 +102,12 @@ class ObsidianFiles:
         self._write_file(f'{self.folderPath}/__narrative.md', text)
 
     def _sanitize_tag(self, tag):
-        return tag.strip().replace(' ', '_').replace('&', '\\&')
+        # Return tag with non-alphanumeric characters replaced.
+        return re.sub(r'\W+', '_', tag)
 
     def _sanitize_title(self, title):
-        for c in self.FORBIDDEN_CHARACTERS:
-            title = title.replace(c, '')
-        return title
+        # Return title with disallowed characters removed.
+        return re.sub(r'[\\|\/|\:|\*|\?|\"|\<|\>|\|]+', '', title)
 
     def _to_markdown(self, text):
         return text.replace('\n', '\n\n')

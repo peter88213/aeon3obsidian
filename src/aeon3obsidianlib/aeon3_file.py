@@ -115,7 +115,7 @@ class Aeon3File:
                 durationStr=durationStr,
                 relationships=relationships,
                 )
-            self.data.items[itemUid].write_to_console()
+            # self.data.items[itemUid].write_to_console()
 
         #--- Create an item index.
         output('Generating item index ...')
