@@ -35,12 +35,12 @@ class Aeon3File:
         print(f'Found file version: "{jsonData["core"].get("coreFileVersion", "Unknown")}".')
 
         #--- Create lookup dictionaries (labels by UID).
-        itemTypeLookup = self._get_item_type_lookup(jsonData)
         itemLabelLookup = self._get_item_label_lookup(jsonData)
-        relationshipTypeLookup = self._get_relationship_type_lookup(jsonData)
         tagLookup = self._get_tag_lookup(jsonData)
+        relationshipTypeLookup = self._get_relationship_type_lookup(jsonData)
         propertyTypeLookup = self._get_property_type_lookup(jsonData)
         propertyEnumLookup = self._get_property_enum_lookup(jsonData)
+        itemTypeLookup = self._get_item_type_lookup(jsonData)
 
         #--- Build the items of the data model.
         calendar = PyCalendar()
@@ -120,12 +120,13 @@ class Aeon3File:
     def _get_item_label_lookup(self, jsonData):
         # Return a lookup dictionary with unique item labels by UID.
         itemLabelLookup = {}
-        for itemUid in jsonData['core']['data']['itemsById']:
+        jsonItems = jsonData['core']['data']['itemsById']
+        for itemUid in jsonItems:
             if not jsonData['collection']['allItemIds'][itemUid]:
                 # item might be deleted
                 continue
 
-            jsonItem = jsonData['core']['data']['itemsById'][itemUid]
+            jsonItem = jsonItems[itemUid]
             aeonLabel = jsonItem.get('label', None)
             if aeonLabel is not None:
                 uniqueLabel = self._get_unique_label(aeonLabel.strip())
@@ -136,8 +137,9 @@ class Aeon3File:
     def _get_item_type_lookup(self, jsonData):
         # Return a lookup dictionary with item type labels by UID.
         itemTypeLookup = {}
-        for itemTypeUid in jsonData['core']['definitions']['types']['byId']:
-            itemType = jsonData['core']['definitions']['types']['byId'][itemTypeUid].get('label', '').strip()
+        itemTypes = jsonData['core']['definitions']['types']['byId']
+        for itemTypeUid in itemTypes:
+            itemType = itemTypes[itemTypeUid].get('label', '').strip()
             itemTypeLookup[itemTypeUid] = itemType
             output(f'Found item type "{itemType}".')
         return itemTypeLookup
@@ -173,8 +175,9 @@ class Aeon3File:
     def _get_property_enum_lookup(self, jsonData):
         # Return a lookup dictionary with allowed property enum labels by UID.
         propertyEnumLookup = {}
-        for propertyTypeUid in jsonData['core']['definitions']['properties']['byId']:
-            propertyType = jsonData['core']['definitions']['properties']['byId'][propertyTypeUid]
+        propertyTypes = jsonData['core']['definitions']['properties']['byId']
+        for propertyTypeUid in propertyTypes:
+            propertyType = propertyTypes[propertyTypeUid]
             for enumUid in propertyType['allowed']:
                 enumLabel = propertyType['allowed'][enumUid]['label']
                 propertyEnumLookup[enumUid] = enumLabel
@@ -184,8 +187,9 @@ class Aeon3File:
     def _get_property_type_lookup(self, jsonData):
         # Return a lookup dictionary with property type labels by UID.
         propertyTypeLookup = {}
-        for propertyTypeUid in jsonData['core']['definitions']['properties']['byId']:
-            propertyType = jsonData['core']['definitions']['properties']['byId'][propertyTypeUid]
+        propertyTypes = jsonData['core']['definitions']['properties']['byId']
+        for propertyTypeUid in propertyTypes:
+            propertyType = propertyTypes[propertyTypeUid]
             propertyTypeLabel = propertyType['label']
             propertyTypeLookup[propertyTypeUid] = propertyTypeLabel.strip()
             output(f'Found property type "{propertyTypeLabel}".')
@@ -194,17 +198,19 @@ class Aeon3File:
     def _get_relationship_type_lookup(self, jsonData):
         # Return a lookup dictionary with relationship type labels by UID.
         relationshipTypeLookup = {}
-        for relationshipTypeUid in jsonData['core']['definitions']['references']['byId']:
-            reference = jsonData['core']['definitions']['references']['byId'][relationshipTypeUid]['label']
-            relationshipTypeLookup[relationshipTypeUid] = reference.strip()
-            output(f'Found relationship type "{reference}".')
+        relationshipTypes = jsonData['core']['definitions']['references']['byId']
+        for relationshipTypeUid in relationshipTypes:
+            relationshipType = relationshipTypes[relationshipTypeUid]['label']
+            relationshipTypeLookup[relationshipTypeUid] = relationshipType.strip()
+            output(f'Found relationship type "{relationshipType}".')
         return relationshipTypeLookup
 
     def _get_tag_lookup(self, jsonData):
         # Return a lookup dictionary with tags by UID.
         tagLookup = {}
-        for tagUid in jsonData['core']['data']['tags']:
-            tagName = jsonData['core']['data']['tags'][tagUid]
+        tags = jsonData['core']['data']['tags']
+        for tagUid in tags:
+            tagName = tags[tagUid]
             tagLookup[tagUid] = tagName.strip()
             output(f'Found tag "{tagName}".')
         return tagLookup
