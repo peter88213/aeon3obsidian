@@ -64,8 +64,8 @@ class ObsidianFiles:
             lines.append(relationshipStr)
         if item.children:
             childrenStr = ''
-            for child, reference in item.children:
-                childrenStr = f'{childrenStr}- **{reference}** : [[{self._sanitize_title(child)}]]\n'
+            for child in item.children:
+                childrenStr = f'{childrenStr}- [[{self._sanitize_title(child)}]]\n'
             lines.append(childrenStr)
         return '\n\n'.join(lines)
 

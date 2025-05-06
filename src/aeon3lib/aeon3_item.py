@@ -55,5 +55,5 @@ class Aeon3Item:
                 output(f'    - {reference} : {target}')
         if self.children:
             output(' - children      :')
-            for child, reference in self.children:
-                output(f'    - {reference} : {child}')
+            for child  in self.children:
+                output(f'    - {child}')

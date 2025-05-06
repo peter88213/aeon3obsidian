@@ -79,6 +79,15 @@ class Aeon3File:
                 )
                 relationships.append(itemRelationship)
 
+            # Get children.
+            children = []
+            jsonChildrenDict = jsonData['core']['data']['superAndChildOrderById'][itemUid]
+            for childUid in jsonChildrenDict['childOrder']:
+                if not childUid in itemLabelLookup:
+                    continue
+
+                children.append(itemLabelLookup[childUid])
+
             # Get date/time/duration.
             itemDate = jsonData['core']['data']['itemDatesById'][itemUid]
             dateStr = calendar.get_date_str(itemDate)
@@ -96,6 +105,7 @@ class Aeon3File:
                 timeStr=timeStr,
                 durationStr=durationStr,
                 relationships=relationships,
+                children=children,
                 )
             self.data.items[itemUid].write_to_console()
 
