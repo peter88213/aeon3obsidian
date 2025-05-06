@@ -69,6 +69,18 @@ class Aeon3File:
             tagLookup[tagUid] = tagName.strip()
             output(f'Found tag "{tagName}".')
 
+        #--- Create property lookup dictionaries.
+        propertyTypeLookup = {}
+        propertyEnumLookup = {}
+        for propertyTypeUid in jsonData['core']['definitions']['properties']['byId']:
+            propertyType = jsonData['core']['definitions']['properties']['byId'][propertyTypeUid]
+            propertyTypeLabel = propertyType['label']
+            propertyTypeLookup[propertyTypeUid] = propertyTypeLabel.strip()
+            output(f'Found property type "{propertyTypeLabel}".')
+            for enumUid in propertyType['allowed']:
+                enumLabel = propertyType['allowed'][enumUid]['label']
+                propertyEnumLookup[enumUid] = enumLabel
+
         #--- Instantiate the item objects of the data model.
         calendar = PyCalendar()
         for itemUid in itemLabelLookup:
@@ -82,6 +94,14 @@ class Aeon3File:
             tags = []
             for tagUid in jsonItem['tags']:
                 tags.append(tagLookup[tagUid])
+            properties = []
+            for propertyTypeUid in jsonItem['propertyValues']:
+                propertyValues = jsonItem['propertyValues'][propertyTypeUid]
+                customProperty = (
+                    propertyTypeLookup[propertyTypeUid],
+                    propertyEnumLookup.get(propertyValues, propertyValues)
+                )
+                properties.append(customProperty)
 
             # Get relationships.
             relationships = []
@@ -109,6 +129,7 @@ class Aeon3File:
                 uniqueLabel,
                 shortLabel=shortLabel,
                 summary=summary,
+                properties=properties,
                 tags=tags,
                 dateStr=dateStr,
                 timeStr=timeStr,

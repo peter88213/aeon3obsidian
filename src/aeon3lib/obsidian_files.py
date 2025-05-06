@@ -43,8 +43,8 @@ class ObsidianFiles:
             lines.append(self._to_markdown(item.summary))
         if item.properties:
             propertyStr = ''
-            for customProperty, reference in item.properties:
-                propertyStr = f'{propertyStr}- {reference} : [[{self._to_markdown(customProperty)}]]\n'
+            for reference , customProperty in item.properties:
+                propertyStr = f'{propertyStr}- **{reference}** : {self._to_markdown(customProperty)}\n'
             lines.append(propertyStr)
         if item.tags:
             tagStr = ''
@@ -60,12 +60,12 @@ class ObsidianFiles:
         if item.relationships:
             relationshipStr = ''
             for target, reference in item.relationships:
-                relationshipStr = f'{relationshipStr}- {reference} : [[{self._sanitize_title(target)}]]\n'
+                relationshipStr = f'{relationshipStr}- **{reference}** : [[{self._sanitize_title(target)}]]\n'
             lines.append(relationshipStr)
         if item.children:
             childrenStr = ''
             for child, reference in item.children:
-                childrenStr = f'{childrenStr}- {reference} : [[{self._sanitize_title(child)}]]\n'
+                childrenStr = f'{childrenStr}- **{reference}** : [[{self._sanitize_title(child)}]]\n'
             lines.append(childrenStr)
         return '\n\n'.join(lines)
 

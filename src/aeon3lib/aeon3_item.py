@@ -40,7 +40,7 @@ class Aeon3Item:
         output(f' - summary       : {self.summary}')
         if self.properties:
             output(' - properties    :')
-            for customProperty, reference in self.properties:
+            for reference, customProperty  in self.properties:
                 output(f'    - {reference} : {customProperty}')
         output(f' - tags          : {self.tags}')
         if self.date:
