@@ -29,7 +29,7 @@ project and generates a set of Markdown documents.
 
 - Unpack the zipfile and copy *aeon3obsidian.py* whereever you want.
 
-[Changelog](docs/changelog)
+[Changelog](docs/changelog.md)
 
 ## Usage
 
