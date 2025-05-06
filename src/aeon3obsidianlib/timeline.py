@@ -6,7 +6,9 @@ License: GNU GPLv3 (https://www.gnu.org/licenses/gpl-3.0.en.html)
 """
 
 
-class DataModel:
+class Timeline:
 
     def __init__(self):
         self.items = {}
+        self.itemIndex = {}
+        self.narrativeTree = {}

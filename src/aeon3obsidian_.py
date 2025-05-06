@@ -27,8 +27,8 @@ import os
 import sys
 
 from aeon3obsidianlib.aeon3_file import Aeon3File
-from aeon3obsidianlib.data_model import DataModel
 from aeon3obsidianlib.obsidian_files import ObsidianFiles
+from aeon3obsidianlib.timeline import Timeline
 
 
 def main(sourcePath):
@@ -41,7 +41,7 @@ def main(sourcePath):
 
     # Create an Aeon 3 file object and read the data.
     aeon3File = Aeon3File(sourcePath)
-    aeon3File.dataModel = DataModel()
+    aeon3File.dataModel = Timeline()
     print(aeon3File.read())
 
     # Define the output directory.

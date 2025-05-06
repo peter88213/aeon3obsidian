@@ -18,11 +18,7 @@ class Aeon3File:
     def __init__(self, filePath):
         self.filePath = filePath
         self.dataModel = None
-        self.labels = {}
-        self.itemIndex = {}
-        self.relationships = {}
-        self.allTags = {}
-        self.narrative = {}
+        self._labelCounts = {}
 
     def read(self):
         """Read the Aeon 3 project file.
@@ -31,82 +27,118 @@ class Aeon3File:
         Return a success message.
         """
 
-        def get_unique_label(key, value):
-            # Add an entry to the labels dictionary, handling multiple labels.
-            if value in labelText:
-                print(f'Multiple label: {value}')
-                number = labelText[value] + 1
-                labelText[value] = number
-                value = f'{value}({number})'
-            else:
-                labelText[value] = 0
-            self.labels[key] = value
-            return value
-
         #--- Read the aeon file and get a JSON data structure.
         print(f'Reading file "{os.path.normpath(self.filePath)}" ...')
-        jsonPart = self._get_json()
-        jsonData = json.loads(jsonPart)
+        jsonStr = self._get_json_string()
+        jsonData = json.loads(jsonStr)
 
-        print(f'Found "core" version {jsonData["core"].get("coreFileVersion", "Unknown")}.')
-        labelText = {}
+        print(f'Found file version: "{jsonData["core"].get("coreFileVersion", "Unknown")}".')
 
-        #--- Create a labels dictionary for types and relationships.
-        for uid in jsonData['core']['definitions']['types']['byId']:
-            item = jsonData['core']['definitions']['types']['byId'][uid].get('label', '').strip()
-            if item:
-                get_unique_label(uid, item)
-                output(f'Found item "{item}".')
-        for uid in jsonData['core']['definitions']['references']['byId']:
-            reference = jsonData['core']['definitions']['references']['byId'][uid].get('label', '').strip()
-            if reference:
-                self.labels[uid] = reference
-                output(f'Found reference "{reference}".')
+        #--- Create an item type lookup dictionary.
+        itemTypeLookup = {}
+        for itemTypeUid in jsonData['core']['definitions']['types']['byId']:
+            itemType = jsonData['core']['definitions']['types']['byId'][itemTypeUid].get('label', '').strip()
+            itemTypeLookup[itemTypeUid] = itemType
+            output(f'Found item type "{itemType}".')
 
-        #--- Create a tag lookup dictionary.
-        for uid in jsonData['core']['data']['tags']:
-            element = jsonData['core']['data']['tags'][uid].strip()
-            self.allTags[uid] = element.replace('&', '\\&')
+        #--- Create an item label lookup dictionary with unique labels.
+        itemLabelLookup = {}
+        for itemUid in jsonData['core']['data']['itemsById']:
+            if not jsonData['collection']['allItemIds'][itemUid]:
+                # this item is deleted
+                continue
 
-        #--- Create a data model and extend the labels dictionary.
-        calendar = PyCalendar()
-        for uid in jsonData['core']['data']['itemsById']:
-            jsonItem = jsonData['core']['data']['itemsById'][uid]
+            jsonItem = jsonData['core']['data']['itemsById'][itemUid]
             aeonLabel = jsonItem.get('label', None)
             if aeonLabel is not None:
-                uniqueLabel = get_unique_label(uid, aeonLabel.strip())
-                output(f'Processing "{uniqueLabel}" ...')
-                self.dataModel.items[uid] = At3Item(
-                    uid,
-                    calendar,
-                    uniqueLabel,
-                    )
-                self.dataModel.items[uid].set_data(
-                    jsonItem,
-                    self.allTags,
-                    jsonData['core']['data']['itemDatesById'][uid],
-                    jsonData['collection']['relationshipIdsByItemId'][uid],
-                    )
+                uniqueLabel = self._get_unique_label(aeonLabel.strip())
+                itemLabelLookup[itemUid] = uniqueLabel
+                output(f'Found item "{uniqueLabel}" ...')
+
+        #--- Create a relationship type lookup dictionary.
+        relationshipTypeLookup = {}
+        for relationshipTypeUid in jsonData['core']['definitions']['references']['byId']:
+            reference = jsonData['core']['definitions']['references']['byId'][relationshipTypeUid].get('label', '').strip()
+            relationshipTypeLookup[relationshipTypeUid] = reference
+            output(f'Found relationship type "{reference}".')
+
+        #--- Create a tag lookup dictionary.
+        tagLookup = {}
+        for tagUid in jsonData['core']['data']['tags']:
+            tagName = jsonData['core']['data']['tags'][tagUid].strip()
+            tagName = tagName.replace('&', '\\&')
+            tagLookup[tagUid] = tagName
+            output(f'Found tag "{tagName}".')
+
+        #--- Instantiate the item objects of the data model.
+        calendar = PyCalendar()
+        for itemUid in itemLabelLookup:
+            uniqueLabel = itemLabelLookup[itemUid]
+            output(f'Processing "{uniqueLabel}" ...')
+
+            # Get item properties.
+            jsonItem = jsonData['core']['data']['itemsById'][itemUid]
+            shortLabel = jsonItem.get('shortLabel', None)
+            summary = jsonItem.get('summary', None)
+            tags = []
+            for tagUid in jsonItem['tags']:
+                tags.append(self._sanitize_tag(tagLookup[tagUid]))
+
+            # Get relationships.
+            relationships = []
+            jsonRelationshipDict = jsonData['collection']['relationshipIdsByItemId'][itemUid]
+            for relUid in jsonRelationshipDict:
+                if not jsonRelationshipDict[relUid]:
+                    # target is deleted
+                    continue
+
+                relationship = jsonData['core']['data']['relationshipsById'][relUid]
+                itemRelationship = (
+                    itemLabelLookup[relationship['object']],
+                    relationshipTypeLookup[relationship['reference']]
+                )
+                relationships.append(itemRelationship)
+
+            # Get date/time/duration.
+            itemDate = jsonData['core']['data']['itemDatesById'][itemUid]
+            dateStr = calendar.get_date_str(itemDate)
+            timeStr = calendar.get_time_str(itemDate)
+            durationStr = calendar.get_duration_str(itemDate)
+
+            # Instantiate the item object.
+            self.dataModel.items[itemUid] = At3Item(
+                uniqueLabel,
+                shortLabel=shortLabel,
+                summary=summary,
+                tags=tags,
+                dateStr=dateStr,
+                timeStr=timeStr,
+                durationStr=durationStr,
+                relationships=relationships,
+                )
 
         #--- Create an item index.
-        for uid in jsonData['core']['data']['itemOrderByType']:
-            if uid in self.dataModel.items:
-                itemUidList = jsonData['core']['data']['itemOrderByType'][uid]
-                self.itemIndex[uid] = itemUidList
-
-        #--- Create a relationships dictionary.
-        for uid in jsonData['core']['data']['relationshipsById']:
-            if uid in self.dataModel.items:
-                refId = jsonData['core']['data']['relationshipsById'][uid]['reference']
-                objId = jsonData['core']['data']['relationshipsById'][uid]['object']
-                self.relationships[uid] = (refId, objId)
+        output('Generating item index ...')
+        itemIndex = {}
+        jsonItemIndex = jsonData['collection']['itemIdsByType']
+        for typeUid in jsonItemIndex:
+            itemType = itemTypeLookup[typeUid]
+            itemIndex[itemType] = []
+            output(f'* Type: {itemType}')
+            for itemUid in jsonItemIndex[typeUid]:
+                itemLabel = itemLabelLookup[itemUid]
+                itemIndex[itemType].append(itemLabel)
+                output(f'  * Item: {itemLabel}')
+        self.dataModel.itemIndex = itemIndex
 
         #--- Get the narrative tree.
-        narrative = jsonData['collection'].get('self.narrative', self.narrative)
 
         return 'Aeon 3 file successfully read.'
 
-    def _get_json(self):
+    def _sanitize_tag(self, label):
+        return label.strip().replace(' ', '_')
+
+    def _get_json_string(self):
         """Read and scan the project file.
         
         Return a string containing the JSON part.
@@ -137,3 +169,13 @@ class Aeon3File:
 
         return jsonStr
 
+    def _get_unique_label(self, aeonLabel):
+        # Return a unique item label.
+        if aeonLabel in self._labelCounts:
+            print(f'Multiple aeonLabel: {aeonLabel}')
+            counts = self._labelCounts[aeonLabel] + 1
+            self._labelCounts[aeonLabel] = counts
+            aeonLabel = f'{aeonLabel}({counts})'
+        else:
+            self._labelCounts[aeonLabel] = 0
+        return aeonLabel

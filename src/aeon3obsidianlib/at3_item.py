@@ -10,69 +10,49 @@ from aeon3obsidianlib.aeon3obsidian_globals import output
 
 class At3Item:
 
-    def __init__(self, uid: str, calendar, label:str=None):
-        self.uid: str = uid
-        self.calendar = calendar
-
-        self.label: str = label
-        # single line text
-
-        self.shortLabel: str = None
-        # single line text
-
-        self.summary: str = None
-        # multiline text
-
-        self.tags: list[str] = None
-
-        self.type: str = None
-
-        self.date: str = None
-        # ISO date string
-
-        self.time: str = None
-        # ISO time string
-
-        self.duration: str = None
-
-        self.relationships: dict[str, list[str]] = None
-        # key: role ID, value: list of entity IDs
-
-        self.children = None
-
-    def set_data(
+    def __init__(
             self,
-            jsonItem,
-            allTags,
-            itemDate,
-            relationships,
+            label,
+            shortLabel=None,
+            summary=None,
+            tags=None,
+            dateStr=None,
+            timeStr=None,
+            durationStr=None,
+            relationships=[],
+            children=[],
             ):
 
-        self.shortLabel = jsonItem.get('shortLabel', None)
-        output(f' - shortLabel: {self.shortLabel}')
-        self.summary = jsonItem.get('summary', None)
-        output(f' - summary   : {self.summary}')
+        #--- Set properties.
+        self.label = label
+        self.shortLabel = shortLabel
+        output(f' - shortLabel    : {self.shortLabel}')
+        self.summary = summary
+        output(f' - summary       : {self.summary}')
+        self.tags = tags
+        output(f' - tags          : {self.tags}')
 
-        #--- Read tags.
-        self.tags = []
-        for uid in jsonItem['tags']:
-            self.tags.append(self._sanitize_tag(allTags[uid]))
-        output(f' - tags      : {self.tags}')
-
-        #--- Read date/time/duration.
-        dateStr = self.calendar.get_date_str(itemDate)
+        #--- Set date/time/duration.
         if dateStr:
             self.date = dateStr
-            output(f' - date      : {dateStr}')
-        timeStr = self.calendar.get_time_str(itemDate)
+            output(f' - date          : {dateStr}')
         if timeStr:
             self.time = timeStr
-            output(f' - time      : {timeStr}')
-        durationStr = self.calendar.get_duration_str(itemDate)
+            output(f' - time          : {timeStr}')
         if durationStr:
             self.duration = durationStr
-            output(f' - duration  : {durationStr}')
+            output(f' - duration      : {durationStr}')
 
-    def _sanitize_tag(self, label):
-        return label.strip().replace(' ', '_')
+        #--- Set relationships.
+        if relationships:
+            output(' - relationships :')
+            self.relationships = relationships
+            for object, reference in self.relationships:
+                output(f'    - {reference} : {object}')
 
+        #--- Set children.
+        if children:
+            output(' - children      :')
+            self.children = children
+            for child, reference in self.children:
+                output(f'    - {reference} : {child}')
