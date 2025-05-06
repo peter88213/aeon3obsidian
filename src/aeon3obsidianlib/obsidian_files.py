@@ -23,11 +23,12 @@ class ObsidianFiles:
         """
         os.makedirs(self.folderPath, exist_ok=True)
         for uid in self.data.items:
-            title = self._strip_title(self.labels[uid])
-            text = self._build_content(self.items[uid])
+            item = self.data.items[uid]
+            title = self._sanitize_title(item.label)
+            text = self._build_content(item)
             self._write_file(f'{self.folderPath}/{title}.md', text)
-        self._build_index()
-        self._build_narrative()
+        # self._build_index()
+        # self._build_narrative()
         return 'Obsidian files successfully written.'
 
     def _build_content(self, item):
@@ -37,40 +38,45 @@ class ObsidianFiles:
             item: dictionary of Aeon item properties.
         """
         lines = []
-        for uid in item:
-            itemProperty = item[uid]
-            if itemProperty:
-                if type(itemProperty) == str:
-                    lines.append(self._to_markdown(itemProperty))
-                else:
-                    for element in itemProperty:
-                        if element in self.relationships:
-                            refId, objId = self.relationships[element]
-                            linkLabel = self.labels[refId]
-                            link = self._strip_title(self.labels[objId])
-                            line = f'- {linkLabel}: [[{link}]]'
-                            lines.append(line)
-                        else:
-                            link = self._strip_title(self.labels.get(element, ''))
-                            if link:
-                                lines.append(f'[[{link}]]')
-                            else:
-                                lines.append(self._to_markdown(element))
-
+        if item.shortLabel:
+            lines.append(item.shortLabel)
+        if item.summary:
+            lines.append(self._to_markdown(item.summary))
+        if item.tags:
+            tagStr = ''
+            for tag in item.tags:
+                tagStr = f'{tagStr} #{self._sanitize_tag(tag)}'
+            lines.append(tagStr)
+        if item.date:
+            lines.append(item.date)
+        if item.time:
+            lines.append(item.time)
+        if item.duration:
+            lines.append(item.duration)
+        if item.relationships:
+            relationshipStr = ''
+            for object, reference in item.relationships:
+                relationshipStr = f'{relationshipStr}- {reference} : [[{self._sanitize_title(object)}]]\n'
+            lines.append(relationshipStr)
+        if item.children:
+            childrenStr = ''
+            for child, reference in item.children:
+                childrenStr = f'{childrenStr}- {reference} : [[{self._sanitize_title(child)}]]\n'
+            lines.append(childrenStr)
         return '\n\n'.join(lines)
 
     def _build_index(self):
         """Create index pages."""
         mainIndexlines = []
         for uid in self.itemIndex:
-            itemType = f'_{self._strip_title(self.labels[uid])}'
+            itemType = f'_{self._sanitize_title(self.labels[uid])}'
             mainIndexlines.append(f'- [[{itemType}]]')
             itemUidList = self.itemIndex[uid]
 
             # Create an index file with the items of the type.
             lines = []
             for itemUid in itemUidList:
-                itemLabel = self._strip_title(self.labels[itemUid])
+                itemLabel = self._sanitize_title(self.labels[itemUid])
                 lines.append(f'- [[{itemLabel}]]')
             text = '\n'.join(lines)
             self._write_file(f'{self.folderPath}/{itemType}.md', text)
@@ -86,7 +92,7 @@ class ObsidianFiles:
             level += 1
             uid = root['id']
             if uid in self.labels:
-                link = self._strip_title(self.labels[uid])
+                link = self._sanitize_title(self.labels[uid])
                 lines.append(f"{'#' * level} [[{link}]]")
             for branch in root['children']:
                 get_branch(branch, level)
@@ -99,14 +105,12 @@ class ObsidianFiles:
     def _sanitize_tag(self, tag):
         return tag.strip().replace(' ', '_').replace('&', '\\&')
 
-    def _strip_title(self, title):
-        """Return title with characters removed that must not appear in a file name."""
+    def _sanitize_title(self, title):
         for c in self.FORBIDDEN_CHARACTERS:
             title = title.replace(c, '')
         return title
 
     def _to_markdown(self, text):
-        """Return text with double linebreaks."""
         return text.replace('\n', '\n\n')
 
     def _write_file(self, filePath, text):

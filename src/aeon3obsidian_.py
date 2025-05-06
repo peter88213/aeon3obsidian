@@ -52,7 +52,7 @@ def main(sourcePath):
     # Create an Obsidian fileset object and write the data.
     obsidianFiles = ObsidianFiles(obsidianFolder)
     obsidianFiles.data = aeon3File.data
-    # print(obsidianFiles.write())
+    print(obsidianFiles.write())
 
 
 if __name__ == '__main__':
