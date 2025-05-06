@@ -41,6 +41,11 @@ class ObsidianFiles:
             lines.append(item.shortLabel)
         if item.summary:
             lines.append(self._to_markdown(item.summary))
+        if item.properties:
+            propertyStr = ''
+            for customProperty, reference in item.properties:
+                propertyStr = f'{propertyStr}- {reference} : [[{self._to_markdown(customProperty)}]]\n'
+            lines.append(propertyStr)
         if item.tags:
             tagStr = ''
             for tag in item.tags:

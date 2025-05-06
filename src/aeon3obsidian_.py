@@ -26,9 +26,9 @@ GNU General Public License for more details.
 import os
 import sys
 
-from aeon3obsidianlib.aeon3_data import Aeon3Data
-from aeon3obsidianlib.aeon3_file import Aeon3File
-from aeon3obsidianlib.obsidian_files import ObsidianFiles
+from aeon3lib.aeon3_data import Aeon3Data
+from aeon3lib.aeon3_file import Aeon3File
+from aeon3lib.obsidian_files import ObsidianFiles
 
 
 def main(sourcePath):

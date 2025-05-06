@@ -8,9 +8,9 @@ import codecs
 import json
 import os
 
-from aeon3obsidianlib.aeon3obsidian_globals import output
-from aeon3obsidianlib.aeon3_item import Aeon3Item
-from aeon3obsidianlib.py_calendar import PyCalendar
+from aeon3lib.aeon3obsidian_globals import output
+from aeon3lib.aeon3_item import Aeon3Item
+from aeon3lib.py_calendar import PyCalendar
 
 
 class Aeon3File:
@@ -115,7 +115,7 @@ class Aeon3File:
                 durationStr=durationStr,
                 relationships=relationships,
                 )
-            # self.data.items[itemUid].write_to_console()
+            self.data.items[itemUid].write_to_console()
 
         #--- Create an item index.
         output('Generating item index ...')

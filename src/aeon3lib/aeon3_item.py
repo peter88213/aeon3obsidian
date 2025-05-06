@@ -5,7 +5,7 @@ For further information see https://github.com/peter88213/aeon3obsidian
 License: GNU GPLv3 (https://www.gnu.org/licenses/gpl-3.0.en.html)
 """
 
-from aeon3obsidianlib.aeon3obsidian_globals import output
+from aeon3lib.aeon3obsidian_globals import output
 
 
 class Aeon3Item:
@@ -15,6 +15,7 @@ class Aeon3Item:
             label,
             shortLabel=None,
             summary=None,
+            properties=[],
             tags=None,
             dateStr=None,
             timeStr=None,
@@ -26,6 +27,7 @@ class Aeon3Item:
         self.label = label
         self.shortLabel = shortLabel
         self.summary = summary
+        self.properties = properties
         self.tags = tags
         self.date = dateStr
         self.time = timeStr
@@ -36,6 +38,10 @@ class Aeon3Item:
     def write_to_console(self):
         output(f' - shortLabel    : {self.shortLabel}')
         output(f' - summary       : {self.summary}')
+        if self.properties:
+            output(' - properties    :')
+            for customProperty, reference in self.properties:
+                output(f'    - {reference} : {customProperty}')
         output(f' - tags          : {self.tags}')
         if self.date:
             output(f' - date          : {self.date}')
