@@ -53,7 +53,7 @@ Please make sure that all requirements are met. Drag/drop only works if Python i
 
 The *aeon3obsidian.py* icon should look like this: 
 
-![Python script icon](Screenshots/py.png)
+![Python script icon](docs/Screenshots/py.png)
 
 Which Python version have you installed?
 
