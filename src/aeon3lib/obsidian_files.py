@@ -68,14 +68,14 @@ class ObsidianFiles:
         return '\n\n'.join(lines)
 
     def _create_index_page(self):
-        mainIndexlines = []
+        mainIndexlines = ['\n']
         for itemType in self.data.itemIndex:
-            mainIndexlines.append(f'- [[{itemType}]]')
+            mainIndexlines.append(f'- [[_{itemType}]]')
             lines = []
             for itemLabel in self.data.itemIndex[itemType]:
                 lines.append(f'- [[{itemLabel}]]')
             text = '\n'.join(lines)
-            self._write_file(f'{self.folderPath}/{itemType}.md', text)
+            self._write_file(f'{self.folderPath}/_{itemType}.md', text)
         text = '\n'.join(mainIndexlines)
         self._write_file(f'{self.folderPath}/__Index.md', text)
 
