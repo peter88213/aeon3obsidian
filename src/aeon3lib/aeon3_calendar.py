@@ -100,6 +100,9 @@ class Aeon3Calendar:
         except:
             return
 
+    def get_iso_date(self, itemDates):
+        pass
+
     def get_timestamp(self, itemDates):
         """Return an integer timestamp or None."""
         startDate = itemDates.get('startDate', None)
@@ -127,16 +130,16 @@ class Aeon3Calendar:
         # Get hour.
         hour = startDate.get('hour', None)
         if hour is not None:
-            timeStr = f'{hour}'
+            timeStr = f'{hour:02}'
 
         # Get minute.
         minute = startDate.get('minute', None)
         if minute is not None:
-            timeStr = f'{timeStr}:{minute}'
+            timeStr = f'{timeStr}:{minute:02}'
 
         # Get second
         second = startDate.get('second', 0)
         if second:
-            timeStr = f'{timeStr}:{second}'
+            timeStr = f'{timeStr}:{second:02}'
         return timeStr
 

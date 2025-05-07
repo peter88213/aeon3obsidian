@@ -10,8 +10,6 @@ import re
 
 class ObsidianFiles:
 
-    HIDDEN_ERAS = ()
-
     def __init__(self, folderPath):
         """Set the Obsidian folder."""
         self.folderPath = folderPath
