@@ -34,37 +34,60 @@ class ObsidianFiles:
         return 'Obsidian files successfully written.'
 
     def _get_markdown_content(self, item):
-        lines = []
+        lines = ['\n']
+
+        #--- Short label.
         if item.shortLabel:
             lines.append(item.shortLabel)
-        if item.summary:
-            lines.append(self._to_markdown(item.summary))
-        if item.properties:
-            propertyStr = ''
-            for reference , customProperty in item.properties:
-                propertyStr = f'{propertyStr}- **{reference}** : {self._to_markdown(customProperty)}\n'
-            lines.append(propertyStr)
+
+        #--- Tags in a row.
         if item.tags:
             tagStr = ''
             for tag in item.tags:
                 tagStr = f'{tagStr} #{self._sanitize_tag(tag)}'
             lines.append(tagStr)
+
+        #--- Summary between rulers.
+        if item.summary:
+            lines.append('---')
+            lines.append(self._to_markdown(item.summary))
+            lines.append('---')
+
+        #--- Date and time in a row.
         if item.date:
-            lines.append(item.date)
+            dateTimeStr = item.date
+        else:
+            dateTimeStr = ''
         if item.time:
-            lines.append(item.time)
+            dateTimeStr = f'{dateTimeStr} {item.time}'
+        if dateTimeStr:
+            lines.append(f'- **When**  : {dateTimeStr}')
+
+        #--- Duration.
         if item.duration:
-            lines.append(item.duration)
+            lines.append(f'- **Lasts** : {item.duration}')
+
+        #--- List of properties.
+        if item.properties:
+            propertyStr = ''
+            for reference , customProperty in item.properties:
+                propertyStr = f'{propertyStr}- **{reference}** : {self._to_markdown_list_element(customProperty)}\n'
+            lines.append(propertyStr)
+
+        #--- List of relationships.
         if item.relationships:
             relationshipStr = ''
             for target, reference in item.relationships:
                 relationshipStr = f'{relationshipStr}- **{reference}** : [[{self._sanitize_title(target)}]]\n'
             lines.append(relationshipStr)
+
+        #--- List of children.
         if item.children:
             childrenStr = ''
             for child in item.children:
                 childrenStr = f'{childrenStr}- [[{self._sanitize_title(child)}]]\n'
             lines.append(childrenStr)
+
         return '\n\n'.join(lines)
 
     def _create_index_page(self):
@@ -104,7 +127,14 @@ class ObsidianFiles:
         return re.sub(r'[\\|\/|\:|\*|\?|\"|\<|\>|\|]+', '', title)
 
     def _to_markdown(self, text):
+        while '\n\n' in text:
+            text = text.replace('\n\n', '\n')
         return text.replace('\n', '\n\n')
+
+    def _to_markdown_list_element(self, text):
+        while '\n\n' in text:
+            text = text.replace('\n\n', '\n')
+        return text.replace('\n', '\n  ')
 
     def _write_file(self, filePath, text):
         """Write a single file and create a backup copy, if applicable.
