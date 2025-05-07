@@ -17,6 +17,8 @@ class Aeon3Item:
             summary=None,
             properties=[],
             tags=None,
+            timestamp=None,
+            era=None,
             dateStr=None,
             timeStr=None,
             durationStr=None,
@@ -29,6 +31,11 @@ class Aeon3Item:
         self.summary = summary
         self.properties = properties
         self.tags = tags
+        self.timestamp = timestamp
+        if era:
+            self.era, self.eraShortName, self.eraFullName = era
+        else:
+            self.era = self.eraShortName = self.eraFullName = None
         self.date = dateStr
         self.time = timeStr
         self.duration = durationStr
@@ -43,6 +50,8 @@ class Aeon3Item:
             for reference, customProperty  in self.properties:
                 output(f'    - {reference} : {customProperty}')
         output(f' - tags          : {self.tags}')
+        if self.eraShortName and self.eraFullName:
+            output(f' - era           : {self.eraFullName} ({self.eraShortName})')
         if self.date:
             output(f' - date          : {self.date}')
         if self.time:

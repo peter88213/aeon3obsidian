@@ -43,7 +43,8 @@ class Aeon3File:
         itemTypeLookup = self._get_item_type_lookup(jsonData)
 
         #--- Build the items of the data model.
-        calendar = PyCalendar()
+        calendar = PyCalendar(jsonData['core']['definitions']['calendar'])
+
         for itemUid in itemLabelLookup:
             uniqueLabel = itemLabelLookup[itemUid]
             output(f'Processing "{uniqueLabel}" ...')
@@ -90,10 +91,12 @@ class Aeon3File:
                 children.append(itemLabelLookup[childUid])
 
             # Get date/time/duration.
-            itemDate = jsonData['core']['data']['itemDatesById'][itemUid]
-            dateStr = calendar.get_date_str(itemDate)
-            timeStr = calendar.get_time_str(itemDate)
-            durationStr = calendar.get_duration_str(itemDate)
+            itemDates = jsonData['core']['data']['itemDatesById'][itemUid]
+            era = calendar.get_era(itemDates)
+            timestamp = calendar.get_timestamp(itemDates)
+            dateStr = calendar.get_date_str(itemDates)
+            timeStr = calendar.get_time_str(itemDates)
+            durationStr = calendar.get_duration_str(itemDates)
 
             # Instantiate the item object.
             self.data.items[itemUid] = Aeon3Item(
@@ -102,6 +105,8 @@ class Aeon3File:
                 summary=summary,
                 properties=properties,
                 tags=tags,
+                timestamp=timestamp,
+                era=era,
                 dateStr=dateStr,
                 timeStr=timeStr,
                 durationStr=durationStr,

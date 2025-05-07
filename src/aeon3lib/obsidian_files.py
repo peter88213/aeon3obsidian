@@ -10,6 +10,8 @@ import re
 
 class ObsidianFiles:
 
+    HIDDEN_ERAS = ('AD')
+
     def __init__(self, folderPath):
         """Set the Obsidian folder."""
         self.folderPath = folderPath
@@ -54,10 +56,12 @@ class ObsidianFiles:
             lines.append('---')
 
         #--- Date and time in a row.
+        dateTimeStr = ''
         if item.date:
             dateTimeStr = item.date
-        else:
-            dateTimeStr = ''
+            if item.eraShortName not in self.HIDDEN_ERAS:
+                dateTimeStr = f'{dateTimeStr} {item.eraShortName}'
+
         if item.time:
             dateTimeStr = f'{dateTimeStr} {item.time}'
         if dateTimeStr:
