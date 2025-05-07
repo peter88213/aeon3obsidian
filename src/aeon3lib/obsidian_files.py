@@ -120,10 +120,9 @@ class ObsidianFiles:
         text = '\n\n'.join(lines)
         self._write_file(f'{self.folderPath}/__Narrative.md', text)
 
-    def get_yaml(self, item):
+    def _get_yaml(self, item):
         #--- Return a string of Obsidian properties in YAML format.
         obsidianProperties = {}
-
         if item.shortLabel:
             obsidianProperties['shortLabel'] = item.shortLabel
         if item.isoDate:
@@ -132,7 +131,6 @@ class ObsidianFiles:
             obsidianProperties['time'] = item.isoTime
         if item.eraShortName:
             obsidianProperties['era'] = item.eraShortName
-
         if obsidianProperties:
             yamlLines = '---\n'
             for propertyLabel in obsidianProperties:
