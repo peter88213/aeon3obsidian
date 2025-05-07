@@ -10,7 +10,7 @@ import os
 
 from aeon3lib.aeon3obsidian_globals import output
 from aeon3lib.aeon3_item import Aeon3Item
-from aeon3lib.py_calendar import PyCalendar
+from aeon3lib.aeon3_calendar import Aeon3Calendar
 
 
 class Aeon3File:
@@ -43,7 +43,7 @@ class Aeon3File:
         itemTypeLookup = self._get_item_type_lookup(jsonData)
 
         #--- Build the items of the data model.
-        calendar = PyCalendar(jsonData['core']['definitions']['calendar'])
+        calendar = Aeon3Calendar(jsonData['core']['definitions']['calendar'])
 
         for itemUid in itemLabelLookup:
             uniqueLabel = itemLabelLookup[itemUid]
