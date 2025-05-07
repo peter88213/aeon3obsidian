@@ -12,16 +12,19 @@ class Aeon3Calendar:
     ISO_ERAS = ('AD')
 
     def __init__(self, calendarDefinitions):
+
         self.eraShortNames = []
         self.eraNames = []
         for era in calendarDefinitions['eras']:
             self.eraShortNames.append(era['shortName'])
             self.eraNames.append(era['name'])
+
         self.monthShortNames = []
         self.monthNames = []
         for month in calendarDefinitions['months']:
             self.monthShortNames.append(month['shortName'])
             self.monthNames.append(month['name'])
+
         self.weekdayShortNames = []
         self.weekdayNames = []
         for weekday in calendarDefinitions['weekdays']:
@@ -35,7 +38,7 @@ class Aeon3Calendar:
 
         dateStr = ''
 
-        # Get the weekday.
+        #--- Get the weekday.
         weekday = startDate.get('weekday', None)
         if weekday is not None:
             try:
@@ -44,12 +47,12 @@ class Aeon3Calendar:
                 pass
             dateStr = f'{weekday}'
 
-        # Get the day.
+        #--- Get the day.
         day = startDate.get('day', None)
         if day is not None:
             dateStr = f'{dateStr} {day}'
 
-        # Get the month.
+        #--- Get the month.
         month = startDate.get('month', None)
         if month is not None:
             try:
@@ -58,12 +61,12 @@ class Aeon3Calendar:
                 pass
             dateStr = f'{dateStr} {month}'
 
-        # Get the year.
+        #--- Get the year.
         year = startDate.get('year', None)
         if year is not None:
             dateStr = f'{dateStr} {year}'
 
-        # Get the era.
+        #--- Get the era.
         era = startDate.get('era', None)
         if era is not None:
             try:
@@ -75,6 +78,7 @@ class Aeon3Calendar:
         return dateStr
 
     def get_duration_str(self, itemDates):
+        """Return a string with comma-separated elements of the duration."""
         durationList = []
         durationDict = itemDates.get('duration', None)
         if durationDict:
@@ -91,17 +95,21 @@ class Aeon3Calendar:
         if startDate is None:
             return
 
-        eraStr = startDate.get('era', None)
-        if eraStr is None:
+        era = startDate.get('era', None)
+        if era is None:
             return
 
         try:
-            eraInt = int(eraStr)
-            return eraInt, self.eraShortNames[eraInt], self.eraNames[eraInt]
+            return era, self.eraShortNames[era], self.eraNames[era]
         except:
             return
 
     def get_iso_date(self, itemDates):
+        """Return a date string formatted acc. to ISO 8601, if applicable. 
+        
+        Return None, if the date isn't within the range specified by ISO 8601, 
+        or in case of error.
+        """
         try:
             startDate = itemDates['startDate']
             era = startDate['era']
@@ -118,13 +126,12 @@ class Aeon3Calendar:
         return f'{year:04}-{month:02}-{day:02}'
 
     def get_iso_time(self, itemDates):
+        """Return a time string formatted acc. to ISO 8601. 
+        
+        Return None in case of error.
+        """
         try:
             startDate = itemDates['startDate']
-            era = startDate['era']
-            eraName = self.eraNames[era]
-            if eraName not in self.ISO_ERAS:
-                return
-
             hour = startDate['hour']
             minute = startDate['minute']
             second = startDate['second']
@@ -139,16 +146,7 @@ class Aeon3Calendar:
         if startDate is None:
             return
 
-        timestampStr = startDate.get('timestamp', None)
-        if timestampStr is None:
-            return
-
-        try:
-            timestamp = int(timestampStr)
-        except:
-            return
-        else:
-            return timestamp
+        return startDate.get('timestamp', None)
 
     def get_time_str(self, itemDates):
         startDate = itemDates.get('startDate', None)

@@ -1,4 +1,4 @@
-"""Provide a base class for Markdown export from Aeon Timeline 3.
+"""Provide a class for Markdown export from Aeon Timeline 3.
 
 Copyright (c) 2025 Peter Triesberger
 For further information see https://github.com/peter88213/aeon3obsidian
@@ -34,7 +34,37 @@ class ObsidianFiles:
         self._create_narrative_page()
         return 'Obsidian files successfully written.'
 
+    def _create_index_page(self):
+        # Write a file containing of item links grouped by item types.
+        mainIndexlines = ['\n']
+        for itemType in self.data.itemIndex:
+            mainIndexlines.append(f'- [[_{itemType}]]')
+            lines = []
+            for itemLabel in self.data.itemIndex[itemType]:
+                lines.append(f'- [[{itemLabel}]]')
+            text = '\n'.join(lines)
+            self._write_file(f'{self.folderPath}/_{itemType}.md', text)
+        text = '\n'.join(mainIndexlines)
+        self._write_file(f'{self.folderPath}/__Index.md', text)
+
+    def _create_narrative_page(self):
+
+        def get_branch(root, level):
+            level += 1
+            uid = root['id']
+            if uid in self.labels:
+                link = self._sanitize_title(self.labels[uid])
+                lines.append(f"{'#' * level} [[{link}]]")
+            for branch in root['children']:
+                get_branch(branch, level)
+
+        lines = []
+        # get_branch(self.data.narrative, 1)
+        text = '\n\n'.join(lines)
+        self._write_file(f'{self.folderPath}/__Narrative.md', text)
+
     def _get_item_page_markdown(self, item):
+        # Return the Markdown part of an item page as a single string.
         lines = ['\n']
 
         #--- Summary between rulers.
@@ -81,36 +111,8 @@ class ObsidianFiles:
 
         return '\n\n'.join(lines)
 
-    def _create_index_page(self):
-        mainIndexlines = ['\n']
-        for itemType in self.data.itemIndex:
-            mainIndexlines.append(f'- [[_{itemType}]]')
-            lines = []
-            for itemLabel in self.data.itemIndex[itemType]:
-                lines.append(f'- [[{itemLabel}]]')
-            text = '\n'.join(lines)
-            self._write_file(f'{self.folderPath}/_{itemType}.md', text)
-        text = '\n'.join(mainIndexlines)
-        self._write_file(f'{self.folderPath}/__Index.md', text)
-
-    def _create_narrative_page(self):
-
-        def get_branch(root, level):
-            level += 1
-            uid = root['id']
-            if uid in self.labels:
-                link = self._sanitize_title(self.labels[uid])
-                lines.append(f"{'#' * level} [[{link}]]")
-            for branch in root['children']:
-                get_branch(branch, level)
-
-        lines = []
-        # get_branch(self.data.narrative, 1)
-        text = '\n\n'.join(lines)
-        self._write_file(f'{self.folderPath}/__Narrative.md', text)
-
     def _get_item_page_yaml(self, item):
-        # Return a string of Obsidian properties in YAML format.
+        # Return the YAML part of an item page as a single string.
         obsidianProperties = {}
 
         #--- Date and time in ISO format ("AD" era only)
@@ -149,22 +151,20 @@ class ObsidianFiles:
         return re.sub(r'[\\|\/|\:|\*|\?|\"|\<|\>|\|]+', '', title)
 
     def _to_markdown(self, text):
+        # Return a string with double linebreaks.
         while '\n\n' in text:
             text = text.replace('\n\n', '\n')
         return text.replace('\n', '\n\n')
 
     def _to_markdown_list_element(self, text):
+        # Return a string with single linebreaks and indented lines.
         while '\n\n' in text:
             text = text.replace('\n\n', '\n')
         return text.replace('\n', '\n  ')
 
     def _write_file(self, filePath, text):
-        """Write a single file and create a backup copy, if applicable.
-        
-        Positional arguments:
-            filePath: str -- Path of the file to write.
-            text: str -- File content.
-        """
+        # Write text to a single file specified by filePath.
+        # Create a backup copy, if applicable.
         backedUp = False
         if os.path.isfile(filePath):
             try:
