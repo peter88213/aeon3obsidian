@@ -26,14 +26,14 @@ class ObsidianFiles:
         for uid in self.data.items:
             item = self.data.items[uid]
             title = self._sanitize_title(item.label)
-            text = self._get_markdown_content(item)
+            text = self._get_item_page_str(item)
             self._write_file(f'{self.folderPath}/{title}.md', text)
 
         self._create_index_page()
         self._create_narrative_page()
         return 'Obsidian files successfully written.'
 
-    def _get_markdown_content(self, item):
+    def _get_item_page_str(self, item):
         lines = ['\n']
 
         #--- Short label.
