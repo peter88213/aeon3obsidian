@@ -9,6 +9,7 @@ License: GNU GPLv3 (https://www.gnu.org/licenses/gpl-3.0.en.html)
 class Aeon3Calendar:
 
     HIDDEN_ERAS = ('AD')
+    ISO_ERAS = ('AD')
 
     def __init__(self, calendarDefinitions):
         self.eraShortNames = []
@@ -101,7 +102,36 @@ class Aeon3Calendar:
             return
 
     def get_iso_date(self, itemDates):
-        pass
+        try:
+            startDate = itemDates['startDate']
+            era = startDate['era']
+            eraName = self.eraNames[era]
+            if eraName not in self.ISO_ERAS:
+                return
+
+            year = startDate['year']
+            month = startDate['month']
+            day = startDate['day']
+        except:
+            return
+
+        return f'{year:04}-{month:02}-{day:02}'
+
+    def get_iso_time(self, itemDates):
+        try:
+            startDate = itemDates['startDate']
+            era = startDate['era']
+            eraName = self.eraNames[era]
+            if eraName not in self.ISO_ERAS:
+                return
+
+            hour = startDate['hour']
+            minute = startDate['minute']
+            second = startDate['second']
+        except:
+            return
+
+        return f'{hour:02}:{minute:02}:{second:02}'
 
     def get_timestamp(self, itemDates):
         """Return an integer timestamp or None."""

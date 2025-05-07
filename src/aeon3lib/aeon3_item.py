@@ -18,6 +18,8 @@ class Aeon3Item:
             properties=[],
             tags=None,
             timestamp=None,
+            isoDate=None,
+            isoTime=None,
             era=None,
             dateStr=None,
             timeStr=None,
@@ -32,6 +34,8 @@ class Aeon3Item:
         self.properties = properties
         self.tags = tags
         self.timestamp = timestamp
+        self.isoDate = isoDate
+        self.isoTime = isoTime
         if era:
             self.era, self.eraShortName, self.eraFullName = era
         else:
@@ -50,6 +54,8 @@ class Aeon3Item:
             for reference, customProperty  in self.properties:
                 output(f'    - {reference} : {customProperty}')
         output(f' - tags          : {self.tags}')
+        if self.isoDate:
+            output(self.isoDate)
         if self.eraShortName and self.eraFullName:
             output(f' - era           : {self.eraFullName} ({self.eraShortName})')
         if self.date:

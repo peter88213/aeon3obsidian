@@ -94,6 +94,8 @@ class Aeon3File:
             itemDates = jsonData['core']['data']['itemDatesById'][itemUid]
             era = calendar.get_era(itemDates)
             timestamp = calendar.get_timestamp(itemDates)
+            isoDate = calendar.get_iso_date(itemDates)
+            isoTime = calendar.get_iso_time(itemDates)
             dateStr = calendar.get_date_str(itemDates)
             timeStr = calendar.get_time_str(itemDates)
             durationStr = calendar.get_duration_str(itemDates)
@@ -106,6 +108,8 @@ class Aeon3File:
                 properties=properties,
                 tags=tags,
                 timestamp=timestamp,
+                isoDate=isoDate,
+                isoTime=isoTime,
                 era=era,
                 dateStr=dateStr,
                 timeStr=timeStr,

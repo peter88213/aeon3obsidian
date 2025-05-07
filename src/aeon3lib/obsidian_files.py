@@ -34,7 +34,8 @@ class ObsidianFiles:
         return 'Obsidian files successfully written.'
 
     def _get_item_page_str(self, item):
-        lines = ['\n']
+        lines = []
+        lines.append('\n')
 
         #--- Short label.
         if item.shortLabel:
@@ -118,6 +119,25 @@ class ObsidianFiles:
         # get_branch(self.data.narrative, 1)
         text = '\n\n'.join(lines)
         self._write_file(f'{self.folderPath}/__Narrative.md', text)
+
+    def get_yaml(self, item):
+        #--- Return a string of Obsidian properties in YAML format.
+        obsidianProperties = {}
+
+        if item.shortLabel:
+            obsidianProperties['shortLabel'] = item.shortLabel
+        if item.isoDate:
+            obsidianProperties['date'] = item.isoDate
+        if item.isoTime:
+            obsidianProperties['time'] = item.isoTime
+        if item.eraShortName:
+            obsidianProperties['era'] = item.eraShortName
+
+        if obsidianProperties:
+            yamlLines = '---\n'
+            for propertyLabel in obsidianProperties:
+                yamlLines = f'{yamlLines}{propertyLabel}: {obsidianProperties[propertyLabel]}\n'
+        return f'{yamlLines}---'
 
     def _sanitize_tag(self, tag):
         # Return tag with non-alphanumeric characters replaced.
