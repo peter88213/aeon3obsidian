@@ -13,18 +13,21 @@ class Aeon3Calendar:
 
     def __init__(self, calendarDefinitions):
 
+        #--- Era enumerations.
         self.eraShortNames = []
         self.eraNames = []
         for era in calendarDefinitions['eras']:
             self.eraShortNames.append(era['shortName'])
             self.eraNames.append(era['name'])
 
+        #--- Month enumerations.
         self.monthShortNames = []
         self.monthNames = []
         for month in calendarDefinitions['months']:
             self.monthShortNames.append(month['shortName'])
             self.monthNames.append(month['name'])
 
+        #--- Weekday enumerations.
         self.weekdayShortNames = []
         self.weekdayNames = []
         for weekday in calendarDefinitions['weekdays']:
