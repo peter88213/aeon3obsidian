@@ -26,27 +26,16 @@ class ObsidianFiles:
         for uid in self.data.items:
             item = self.data.items[uid]
             title = self._sanitize_title(item.label)
-            text = self._get_item_page_str(item)
+            text = self._get_item_page_yaml(item)
+            text = f'{text}{self._get_item_page_markdown(item)}'
             self._write_file(f'{self.folderPath}/{title}.md', text)
 
         self._create_index_page()
         self._create_narrative_page()
         return 'Obsidian files successfully written.'
 
-    def _get_item_page_str(self, item):
-        lines = []
-        lines.append('\n')
-
-        #--- Short label.
-        if item.shortLabel:
-            lines.append(item.shortLabel)
-
-        #--- Tags in a row.
-        if item.tags:
-            tagStr = ''
-            for tag in item.tags:
-                tagStr = f'{tagStr} #{self._sanitize_tag(tag)}'
-            lines.append(tagStr)
+    def _get_item_page_markdown(self, item):
+        lines = ['\n']
 
         #--- Summary between rulers.
         if item.summary:
@@ -120,22 +109,36 @@ class ObsidianFiles:
         text = '\n\n'.join(lines)
         self._write_file(f'{self.folderPath}/__Narrative.md', text)
 
-    def _get_yaml(self, item):
-        #--- Return a string of Obsidian properties in YAML format.
+    def _get_item_page_yaml(self, item):
+        # Return a string of Obsidian properties in YAML format.
         obsidianProperties = {}
-        if item.shortLabel:
-            obsidianProperties['shortLabel'] = item.shortLabel
+
+        #--- Date and time in ISO format ("AD" era only)
         if item.isoDate:
             obsidianProperties['date'] = item.isoDate
-        if item.isoTime:
-            obsidianProperties['time'] = item.isoTime
-        if item.eraShortName:
-            obsidianProperties['era'] = item.eraShortName
-        if obsidianProperties:
-            yamlLines = '---\n'
-            for propertyLabel in obsidianProperties:
-                yamlLines = f'{yamlLines}{propertyLabel}: {obsidianProperties[propertyLabel]}\n'
-        return f'{yamlLines}---'
+            if item.isoTime:
+                obsidianProperties['time'] = f'{item.isoDate}T{item.isoTime}'
+
+        #--- Short label as Alias.
+        if item.shortLabel:
+            obsidianProperties['aliases'] = f'\n  - {item.shortLabel}'
+
+        #--- List of tags.
+        if item.tags:
+            tags = []
+            for tag in item.tags:
+                tags.append(f'  - {self._sanitize_tag(tag)}')
+            tagStr = '\n'.join(tags)
+            obsidianProperties['tags'] = f'\n{tagStr}'
+
+        if not obsidianProperties:
+            return ''
+
+        yamlLines = ['---']
+        for propertyLabel in obsidianProperties:
+            yamlLines.append(f'{propertyLabel}: {obsidianProperties[propertyLabel]}')
+        yamlLines.append('---')
+        return '\n'.join(yamlLines)
 
     def _sanitize_tag(self, tag):
         # Return tag with non-alphanumeric characters replaced.
