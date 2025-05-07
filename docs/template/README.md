@@ -22,7 +22,7 @@ may no longer work for you. Please consider it experimental.
 - Creates links to child items. 
 - Inserts custom properties, if any. 
 - Inserts tags, if any. 
-- Inserts date/time (Gregorian date, "A.D." only) for the event-based pages. 
+- Inserts date/time for the event-based pages. 
 - Inserts duration (as set in Aeon) for the event-based pages. 
 - The `__Index.md` file holds the table of contents on the top level. 
 - The `__Narrative.md` file holds the table of contents of the narrative. 
