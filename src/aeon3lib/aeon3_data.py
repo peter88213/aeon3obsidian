@@ -12,3 +12,26 @@ class Aeon3Data:
         self.items = {}
         self.itemIndex = {}
         self.narrative = {}
+
+    def sort_items_by_date(self, itemList):
+        """Return a list of items, sorted by dates including the eras.
+        
+        Positional arguments:
+            itemList -- List of item UIDs.
+        
+        Undated items are placed last in original order.
+        """
+        datedItems = []
+        undatedItems = []
+        for uid in itemList:
+            try:
+                if self.items[uid].timestamp:
+                    datedItems.append(uid)
+                else:
+                    undatedItems.append(uid)
+            except KeyError:
+                continue
+
+        datedItems.sort(key=lambda e: (self.items[e].era, self.items[e].timestamp))
+        return datedItems + undatedItems
+
