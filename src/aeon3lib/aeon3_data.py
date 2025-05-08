@@ -26,7 +26,7 @@ class Aeon3Data:
         undatedItems = []
         for uid in itemList:
             try:
-                if self.items[uid].timestamp:
+                if self.items[uid].timestamp is not None:
                     datedItems.append(uid)
                 else:
                     undatedItems.append(uid)
