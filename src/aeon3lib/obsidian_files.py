@@ -10,6 +10,8 @@ import re
 
 class ObsidianFiles:
 
+    HIDDEN_ERAS = ('AD')
+
     def __init__(self, folderPath):
         """Set the Obsidian folder."""
         self.folderPath = folderPath
@@ -63,6 +65,22 @@ class ObsidianFiles:
         text = '\n\n'.join(lines)
         self._write_file(f'{self.folderPath}/__Narrative.md', text)
 
+    def _get_date_str(self, item):
+        # Return a formatted string with the date to display.
+        dateStr = ''
+        if item.weekdayName is not None:
+            dateStr = f'{item.weekdayName}'
+        if item.day is not None:
+            dateStr = f'{dateStr} {item.day}'
+        if item.monthName is not None:
+            dateStr = f'{dateStr} {item.monthName}'
+        if item.year is not None:
+            dateStr = f'{dateStr} {item.year}'
+        if item.eraShortName is not None:
+            if item.eraShortName not in self.HIDDEN_ERAS:
+                dateStr = f'{dateStr} {item.eraShortName}'
+        return dateStr
+
     def _get_item_page_markdown(self, item):
         # Return the Markdown part of an item page as a single string.
         lines = ['\n']
@@ -75,13 +93,9 @@ class ObsidianFiles:
 
         #--- Date and time in a row.
         dateTimeStr = ''
-        dateStr = ''
-        if item.date:
-            dateStr = item.date
-        if item.time:
-            dateStr = f'{dateStr} {item.time}'
+        dateStr = self._get_date_str(item)
         if dateStr:
-            dateTimeStr = f'- **When** : {dateStr}\n'
+            dateTimeStr = f'- **When** : {dateStr} {self._get_time_str(item)}\n'
 
         #--- Duration.
         if item.duration:
@@ -141,6 +155,17 @@ class ObsidianFiles:
             yamlLines.append(f'{propertyLabel}: {obsidianProperties[propertyLabel]}')
         yamlLines.append('---')
         return '\n'.join(yamlLines)
+
+    def _get_time_str(self, item):
+        # Return a formatted string with the time to display.
+        timeStr = ''
+        if item.hour is not None:
+            timeStr = f'{item.hour}'
+        if item.minute is not None:
+            timeStr = f'{timeStr}:{item.minute:02}'
+        if item.second:
+            timeStr = f'{timeStr}:{item.second:02}'
+        return timeStr
 
     def _sanitize_tag(self, tag):
         # Return tag with non-alphanumeric characters replaced.

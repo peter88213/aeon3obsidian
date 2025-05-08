@@ -93,12 +93,16 @@ class Aeon3File:
             # Get date/time/duration.
             itemDates = jsonData['core']['data']['itemDatesById'][itemUid]
             era = calendar.get_era(itemDates)
+            weekday = calendar.get_weekday(itemDates)
+            month = calendar.get_month(itemDates)
+            year = calendar.get_year(itemDates)
+            day = calendar.get_day(itemDates)
+            hour = calendar.get_hour(itemDates)
+            minute = calendar.get_minute(itemDates)
+            second = calendar.get_second(itemDates)
             timestamp = calendar.get_timestamp(itemDates)
             isoDate = calendar.get_iso_date(itemDates)
             isoTime = calendar.get_iso_time(itemDates)
-            dateStr = calendar.get_date_str(itemDates)
-            timeStr = calendar.get_time_str(itemDates)
-            durationStr = calendar.get_duration_str(itemDates)
 
             # Instantiate the item object.
             self.data.items[itemUid] = Aeon3Item(
@@ -111,13 +115,16 @@ class Aeon3File:
                 isoDate=isoDate,
                 isoTime=isoTime,
                 era=era,
-                dateStr=dateStr,
-                timeStr=timeStr,
-                durationStr=durationStr,
+                weekday=weekday,
+                month=month,
+                year=year,
+                day=day,
+                hour=hour,
+                minute=minute,
+                second=second,
                 relationships=relationships,
                 children=children,
                 )
-            self.data.items[itemUid].write_to_console()
 
         #--- Create an item index.
         output('Generating item index ...')

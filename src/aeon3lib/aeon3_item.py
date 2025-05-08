@@ -5,8 +5,6 @@ For further information see https://github.com/peter88213/aeon3obsidian
 License: GNU GPLv3 (https://www.gnu.org/licenses/gpl-3.0.en.html)
 """
 
-from aeon3lib.aeon3obsidian_globals import output
-
 
 class Aeon3Item:
 
@@ -21,8 +19,13 @@ class Aeon3Item:
             isoDate=None,
             isoTime=None,
             era=None,
-            dateStr=None,
-            timeStr=None,
+            weekday=None,
+            month=None,
+            year=None,
+            day=None,
+            hour=None,
+            minute=None,
+            second=None,
             durationStr=None,
             relationships=[],
             children=[],
@@ -37,38 +40,23 @@ class Aeon3Item:
         self.isoDate = isoDate
         self.isoTime = isoTime
         if era:
-            self.era, self.eraShortName, self.eraFullName = era
+            self.era, self.eraShortName, self.eraName = era
         else:
-            self.era = self.eraShortName = self.eraFullName = None
-        self.date = dateStr
-        self.time = timeStr
+            self.era = self.eraShortName = self.eraName = None
+        if weekday:
+            self.weekday, self.weekdayShortName, self.weekdayName = weekday
+        else:
+            self.weekday = self.weekdayShortName = self.weekdayName = None
+        if month:
+            self.month, self.monthShortName, self.monthName = month
+        else:
+            self.month = self.monthShortName = self.monthName = None
+        self.year = year
+        self.day = day
+        self.hour = hour
+        self.minute = minute
+        self.second = second
         self.duration = durationStr
         self.relationships = relationships
         self.children = children
 
-    def write_to_console(self):
-        output(f' - shortLabel    : {self.shortLabel}')
-        output(f' - summary       : {self.summary}')
-        if self.properties:
-            output(' - properties    :')
-            for reference, customProperty  in self.properties:
-                output(f'    - {reference} : {customProperty}')
-        output(f' - tags          : {self.tags}')
-        if self.isoDate:
-            output(self.isoDate)
-        if self.eraShortName and self.eraFullName:
-            output(f' - era           : {self.eraFullName} ({self.eraShortName})')
-        if self.date:
-            output(f' - date          : {self.date}')
-        if self.time:
-            output(f' - time          : {self.time}')
-        if self.duration:
-            output(f' - duration      : {self.duration}')
-        if self.relationships:
-            output(' - relationships :')
-            for target, reference in self.relationships:
-                output(f'    - {reference} : {target}')
-        if self.children:
-            output(' - children      :')
-            for child  in self.children:
-                output(f'    - {child}')
