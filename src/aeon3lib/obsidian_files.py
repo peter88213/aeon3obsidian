@@ -42,8 +42,9 @@ class ObsidianFiles:
         for itemType in self.data.itemIndex:
             mainIndexlines.append(f'- [[_{itemType}]]')
             lines = []
-            for itemLabel in self.data.itemIndex[itemType]:
-                lines.append(f'- [[{itemLabel}]]')
+            sortedItems = self.data.sort_items_by_date(self.data.itemIndex[itemType])
+            for itemUid in sortedItems:
+                lines.append(f'- [[{self.data.items[itemUid].label}]]')
             text = '\n'.join(lines)
             self._write_file(f'{self.folderPath}/_{itemType}.md', text)
         text = '\n'.join(mainIndexlines)

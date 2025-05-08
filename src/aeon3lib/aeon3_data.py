@@ -10,8 +10,11 @@ class Aeon3Data:
 
     def __init__(self):
         self.items = {}
+        # item instances by item UIDs
         self.itemIndex = {}
+        # item UIDs by type labels
         self.narrative = {}
+        # tree of item UIDs
 
     def sort_items_by_date(self, itemList):
         """Return a list of item UIDs, sorted by date including the era.
