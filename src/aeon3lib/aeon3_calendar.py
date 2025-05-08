@@ -80,6 +80,21 @@ class Aeon3Calendar:
                 dateStr = f'{dateStr} {era}'
         return dateStr
 
+    def get_day(self, itemDates):
+        """Return a tuple: (day as an integer, day's short name, day's name)."""
+        startDate = itemDates.get('startDate', None)
+        if startDate is None:
+            return
+
+        day = startDate.get('day', None)
+        if day is None:
+            return
+
+        try:
+            return day, self.dayShortNames[day], self.dayNames[day]
+        except:
+            return
+
     def get_duration_str(self, itemDates):
         """Return a string with comma-separated elements of the duration."""
         durationList = []
@@ -93,7 +108,7 @@ class Aeon3Calendar:
         return durationStr
 
     def get_era(self, itemDates):
-        """Return a tuple: (era's order, era's short name, era's name)."""
+        """Return a tuple: (era as an integer, era's short name, era's name)."""
         startDate = itemDates.get('startDate', None)
         if startDate is None:
             return
@@ -106,6 +121,12 @@ class Aeon3Calendar:
             return era, self.eraShortNames[era], self.eraNames[era]
         except:
             return
+
+    def get_hour(self, itemDates):
+        """Return an integer hour or None."""
+        startDate = itemDates.get('startDate', None)
+        if startDate is not  None:
+            return  startDate.get('hour', None)
 
     def get_iso_date(self, itemDates):
         """Return a date string formatted acc. to ISO 8601, if applicable. 
@@ -143,13 +164,38 @@ class Aeon3Calendar:
 
         return f'{hour:02}:{minute:02}:{second:02}'
 
-    def get_timestamp(self, itemDates):
-        """Return an integer timestamp or None."""
+    def get_minute(self, itemDates):
+        """Return an integer minute or None."""
+        startDate = itemDates.get('startDate', None)
+        if startDate is not None:
+            return startDate.get('minute', None)
+
+    def get_month(self, itemDates):
+        """Return a tuple: (month's order, month's short name, month's name)."""
         startDate = itemDates.get('startDate', None)
         if startDate is None:
             return
 
-        return startDate.get('timestamp', None)
+        month = startDate.get('month', None)
+        if month is None:
+            return
+
+        try:
+            return month, self.monthShortNames[month], self.monthNames[month]
+        except:
+            return
+
+    def get_second(self, itemDates):
+        """Return an integer second or None."""
+        startDate = itemDates.get('startDate', None)
+        if startDate is not None:
+            return startDate.get('second', None)
+
+    def get_timestamp(self, itemDates):
+        """Return an integer timestamp or None."""
+        startDate = itemDates.get('startDate', None)
+        if startDate is not None:
+            return startDate.get('timestamp', None)
 
     def get_time_str(self, itemDates):
         startDate = itemDates.get('startDate', None)
@@ -173,4 +219,34 @@ class Aeon3Calendar:
         if second:
             timeStr = f'{timeStr}:{second:02}'
         return timeStr
+
+    def get_weekday(self, itemDates):
+        """Return a tuple: (weekday as an integer, weekday's short name, weekday's name)."""
+        startDate = itemDates.get('startDate', None)
+        if startDate is None:
+            return
+
+        weekday = startDate.get('weekday', None)
+        if weekday is None:
+            return
+
+        try:
+            return weekday, self.weekdayShortNames[weekday], self.weekdayNames[weekday]
+        except:
+            return
+
+    def get_year(self, itemDates):
+        """Return a tuple: (year as an integer, year's short name, year's name)."""
+        startDate = itemDates.get('startDate', None)
+        if startDate is None:
+            return
+
+        year = startDate.get('year', None)
+        if year is None:
+            return
+
+        try:
+            return year, self.yearShortNames[year], self.yearNames[year]
+        except:
+            return
 
