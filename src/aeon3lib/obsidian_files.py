@@ -52,17 +52,16 @@ class ObsidianFiles:
 
     def _create_narrative_page(self):
 
-        def get_branch(root, level):
+        def get_branch(branch, level):
             level += 1
-            uid = root['id']
-            if uid in self.labels:
-                link = self._sanitize_title(self.labels[uid])
-                lines.append(f"{'#' * level} [[{link}]]")
-            for branch in root['children']:
-                get_branch(branch, level)
+            for uid in branch:
+                if uid in self.data.items:
+                    link = self._sanitize_title(self.data.items[uid].label)
+                    lines.append(f"{'#' * level} [[{link}]]")
+                get_branch(branch[uid], level)
 
         lines = []
-        # get_branch(self.data.narrative, 1)
+        get_branch(self.data.narrative, 1)
         text = '\n\n'.join(lines)
         self._write_file(f'{self.folderPath}/__Narrative.md', text)
 

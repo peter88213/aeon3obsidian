@@ -140,7 +140,7 @@ class Aeon3File:
         self.data.itemIndex = itemIndex
 
         #--- Get the narrative tree.
-
+        self.data.narrative = self._get_narrative_tree(jsonData)
         return 'Aeon 3 file successfully read.'
 
     def _get_item_label_lookup(self, jsonData):
@@ -197,6 +197,27 @@ class Aeon3File:
             raise ValueError('Error: No JSON part found.')
 
         return jsonStr
+
+    def _get_narrative_tree(self, jsonData):
+        # Return a tree of narrative item UIDs.
+
+        def get_branch(uid, branch):
+            for child in jsonNarrative[uid]['children']:
+                branch[child] = {}
+                get_branch(child, branch[child])
+
+        narrativeTree = {}
+        jsonNarrative = jsonData['collection'].get('narrativeSacById', None)
+        if jsonNarrative is None:
+            return narrativeTree
+
+        for folderUid in jsonNarrative:
+            if jsonNarrative[folderUid]['super'] is None:
+                break
+
+        narrativeTree[folderUid] = {}
+        get_branch(folderUid, narrativeTree[folderUid])
+        return narrativeTree
 
     def _get_property_enum_lookup(self, jsonData):
         # Return a lookup dictionary with allowed property enum labels by UID.
