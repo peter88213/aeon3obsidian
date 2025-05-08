@@ -33,6 +33,13 @@ class Aeon3Data:
             except KeyError:
                 continue
 
-        datedItems.sort(key=lambda e: (self.items[e].era, self.items[e].timestamp))
+        datedItems.sort(key=lambda e: (
+            self.items[e].era,
+            self.items[e].timestamp,
+            self.items[e].label
+            ))
+        undatedItems.sort(key=lambda e: (
+            self.items[e].label
+            ))
         return datedItems + undatedItems
 

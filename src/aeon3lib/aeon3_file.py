@@ -134,7 +134,8 @@ class Aeon3File:
             itemType = itemTypeLookup[typeUid]
             itemIndex[itemType] = []
             output(f'* Type: {itemType}')
-            for itemUid in jsonItemIndex[typeUid]:
+            sortedItems = self.data.sort_items_by_date(jsonItemIndex[typeUid])
+            for itemUid in sortedItems:
                 itemLabel = itemLabelLookup[itemUid]
                 itemIndex[itemType].append(itemLabel)
                 output(f'  * Item: {itemLabel}')
