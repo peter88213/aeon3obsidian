@@ -14,12 +14,13 @@ class Aeon3Data:
         self.narrative = {}
 
     def sort_items_by_date(self, itemList):
-        """Return a list of items, sorted by dates including the eras.
+        """Return a list of item UIDs, sorted by date including the era.
         
         Positional arguments:
             itemList -- List of item UIDs.
         
-        Undated items are placed last in original order.
+        UIDs of undated items are placed last in original order.
+        Invalid UIDs are discarded.
         """
         datedItems = []
         undatedItems = []
