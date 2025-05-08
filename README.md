@@ -1,6 +1,18 @@
 The *aeon3obsidian* Python script extracts the items of an [Aeon Timeline 3](https://timeline.app/) 
 project and generates a set of Markdown documents.
 
+---
+
+## Note
+
+This script is based on a reverse-engineered *.aeon* project file created
+with *Aeon Timeline* version 3.4.20. The file is marked as version 15. 
+
+When the application is updated, the file format may change and this tool 
+may no longer work for you. Please consider it experimental.
+
+---
+
 ![Screenshot](docs/Screenshots/screen01.png)
 
 ## Features
@@ -10,7 +22,7 @@ project and generates a set of Markdown documents.
 - Creates links to child items. 
 - Inserts custom properties, if any. 
 - Inserts tags, if any. 
-- Inserts date/time (Gregorian date, "A.D." only) for the event-based pages. 
+- Inserts date/time for the event-based pages. 
 - Inserts duration (as set in Aeon) for the event-based pages. 
 - The `__Index.md` file holds the table of contents on the top level. 
 - The `__Narrative.md` file holds the table of contents of the narrative. 
@@ -19,13 +31,11 @@ project and generates a set of Markdown documents.
 
 - [Python](https://www.python.org/) version 3.6+.
 
-**According to recent user feedback, the Aeon Timeline 3 file format has been changed, so this script might not work for you.**
-
 **Aeon Timeline 2 users:** A variant for Aeon Timeline 2 can be found [here](https://peter88213.github.io/aeon2obsidian/).
 
 ## Download and install
 
-[Download the latest release (version 1.0.5)](https://raw.githubusercontent.com/peter88213/aeon3obsidian/main/dist/aeon3obsidian_v1.0.5.zip)
+[Download the latest release (version 2.0.0)](https://raw.githubusercontent.com/peter88213/aeon3obsidian/main/dist/aeon3obsidian_v2.0.0.zip)
 
 - Unpack the zipfile and copy *aeon3obsidian.py* whereever you want.
 
@@ -65,4 +75,3 @@ In case of doubt, please start the *aeon3obsidian.py* script from the text conso
 This is Open Source software, and *aeon3obsidian* is licensed under GPLv3. See the
 [GNU General Public License website](https://www.gnu.org/licenses/gpl-3.0.en.html) for more
 details, or consult the [LICENSE](https://github.com/peter88213/aeon3obsidian/blob/main/LICENSE) file.
-

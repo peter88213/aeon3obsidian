@@ -4,38 +4,42 @@
 
 ## Changelog
 
-### v1.0.5
+### Version 2.0.0
+
+- Based on a reverse-engineered *.aeon* project file created with *Aeon Timeline* version 3.4.20. The file is marked as version 15.
+
+### Version 1.0.5
 
 - Make sure that the relationships don't refer to items without a valid label.
 
-### v1.0.4
+### Version 1.0.4
 
 - Write the version number to stdout. 
 
-### v1.0.3
+### Version 1.0.3
 
 - Make sure that the item index doesn't contain items without a valid label.
 
-### v1.0.2
+### Version 1.0.2
 
 - Fix a regression from v1.0.1 where the program may abort on error.
 
-### v1.0.1
+### Version 1.0.1
 
 - When building the data model, skip Aeon items with a missing label. 
 
-### v1.0.0
+### Version 1.0.0
 
 - Rewrite from scratch.
 - All Aeon 3 items and relationships are now processed.
 
-### v0.1.1 Alpha release
+### Version 0.1.1 Alpha release
 
 - Add a "Tags" mark to the section, character, and location pages. 
 
 Based on PyWriter v3.24.3 and aeon3yw v1.0.2
 
-### v0.1.0 Alpha release
+### Version 0.1.0 Alpha release
 
 - Use double linebreaks, according to Markdown standard.
 - Add a sample configuration file.
