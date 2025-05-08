@@ -1,4 +1,4 @@
-"""Provide a class for Aeon Timeline 3 items.
+"""Provide a class for Aeon Timeline 3 item representation.
 
 Copyright (c) 2025 Peter Triesberger
 For further information see https://github.com/peter88213/aeon3obsidian
@@ -11,6 +11,7 @@ class Aeon3Item:
     def __init__(
             self,
             label,
+            typeUid,
             shortLabel=None,
             summary=None,
             properties=[],
@@ -32,6 +33,7 @@ class Aeon3Item:
             ):
 
         self.label = label
+        self.typeUid = typeUid
         self.shortLabel = shortLabel
         self.summary = summary
         self.properties = properties

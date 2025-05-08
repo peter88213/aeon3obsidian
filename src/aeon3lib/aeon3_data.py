@@ -11,6 +11,8 @@ class Aeon3Data:
     def __init__(self):
         self.items = {}
         # item instances by item UIDs
+        self.itemTypes = {}
+        # item type instances by type UIDs
         self.itemIndex = {}
         # item UIDs by type labels
         self.narrative = {}

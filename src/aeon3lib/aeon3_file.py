@@ -8,9 +8,10 @@ import codecs
 import json
 import os
 
-from aeon3lib.aeon3obsidian_globals import output
-from aeon3lib.aeon3_item import Aeon3Item
 from aeon3lib.aeon3_calendar import Aeon3Calendar
+from aeon3lib.aeon3_item import Aeon3Item
+from aeon3lib.aeon3_type import Aeon3Type
+from aeon3lib.aeon3obsidian_globals import output
 
 
 class Aeon3File:
@@ -40,7 +41,9 @@ class Aeon3File:
         relationshipTypeLookup = self._get_relationship_type_lookup(jsonData)
         propertyTypeLookup = self._get_property_type_lookup(jsonData)
         propertyEnumLookup = self._get_property_enum_lookup(jsonData)
-        itemTypeLookup = self._get_item_type_lookup(jsonData)
+
+        #--- Set the item types of the data model.
+        self.data.itemTypes = self._get_item_types(jsonData)
 
         #--- Build the items of the data model.
         calendar = Aeon3Calendar(jsonData['core']['definitions']['calendar'])
@@ -51,6 +54,7 @@ class Aeon3File:
 
             # Get properties.
             jsonItem = jsonData['core']['data']['itemsById'][itemUid]
+            typeUid = jsonItem.get('type', None)
             shortLabel = jsonItem.get('shortLabel', None)
             summary = jsonItem.get('summary', None)
             tags = []
@@ -107,6 +111,7 @@ class Aeon3File:
             # Instantiate the item object.
             self.data.items[itemUid] = Aeon3Item(
                 uniqueLabel,
+                typeUid,
                 shortLabel=shortLabel,
                 summary=summary,
                 properties=properties,
@@ -127,16 +132,12 @@ class Aeon3File:
                 )
 
         #--- Create an item index.
-        output('Generating item index ...')
         itemIndex = {}
         jsonItemIndex = jsonData['collection']['itemIdsByType']
         for typeUid in jsonItemIndex:
-            itemType = itemTypeLookup[typeUid]
-            itemIndex[itemType] = []
-            output(f'* Type: {itemType}')
+            itemIndex[typeUid] = []
             for itemUid in jsonItemIndex[typeUid]:
-                itemIndex[itemType].append(itemUid)
-                output(f'  * Item: {self.data.items[itemUid].label}')
+                itemIndex[typeUid].append(itemUid)
         self.data.itemIndex = itemIndex
 
         #--- Get the narrative tree.
@@ -157,18 +158,17 @@ class Aeon3File:
             if aeonLabel is not None:
                 uniqueLabel = self._get_unique_label(aeonLabel.strip())
                 itemLabelLookup[itemUid] = uniqueLabel
-                output(f'Found item "{uniqueLabel}" ...')
         return itemLabelLookup
 
-    def _get_item_type_lookup(self, jsonData):
-        # Return a lookup dictionary with item type labels by UID.
-        itemTypeLookup = {}
-        itemTypes = jsonData['core']['definitions']['types']['byId']
-        for itemTypeUid in itemTypes:
-            itemType = itemTypes[itemTypeUid].get('label', '').strip()
-            itemTypeLookup[itemTypeUid] = itemType
-            output(f'Found item type "{itemType}".')
-        return itemTypeLookup
+    def _get_item_types(self, jsonData):
+        # Return a dictionary with item types by UID.
+        itemTypes = {}
+        jsonTypes = jsonData['core']['definitions']['types']['byId']
+        for typeUid in jsonTypes:
+            label = jsonTypes[typeUid].get('label', '').strip()
+            isNarrativeFolder = jsonTypes[typeUid].get('isNarrativeFolder', None)
+            itemTypes[typeUid] = Aeon3Type(label, isNarrativeFolder)
+        return itemTypes
 
     def _get_json_string(self):
         # Return a string containing the JSON part of the aeon file.

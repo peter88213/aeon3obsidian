@@ -39,14 +39,15 @@ class ObsidianFiles:
     def _create_index_page(self):
         # Write a file containing of item links grouped by item types.
         mainIndexlines = ['\n']
-        for itemType in self.data.itemIndex:
-            mainIndexlines.append(f'- [[_{itemType}]]')
+        for typeUid in self.data.itemIndex:
+            typeLabel = self.data.itemTypes[typeUid].label
+            mainIndexlines.append(f'- [[_{typeLabel}]]')
             lines = []
-            sortedItems = self.data.sort_items_by_date(self.data.itemIndex[itemType])
+            sortedItems = self.data.sort_items_by_date(self.data.itemIndex[typeUid])
             for itemUid in sortedItems:
                 lines.append(f'- [[{self.data.items[itemUid].label}]]')
             text = '\n'.join(lines)
-            self._write_file(f'{self.folderPath}/_{itemType}.md', text)
+            self._write_file(f'{self.folderPath}/_{typeLabel}.md', text)
         text = '\n'.join(mainIndexlines)
         self._write_file(f'{self.folderPath}/__Index.md', text)
 
@@ -57,7 +58,12 @@ class ObsidianFiles:
             for uid in branch:
                 if uid in self.data.items:
                     link = self._sanitize_title(self.data.items[uid].label)
-                    lines.append(f"{'#' * level} [[{link}]]")
+                    typeUid = self.data.items[uid].typeUid
+                    if self.data.itemTypes[typeUid].isNarrativeFolder:
+                        linkPrefix = f"{'#' * level} "
+                    else:
+                        linkPrefix = ''
+                    lines.append(f"{linkPrefix}[[{link}]]")
                 get_branch(branch[uid], level)
 
         lines = []
