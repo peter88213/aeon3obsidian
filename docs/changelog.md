@@ -4,9 +4,14 @@
 
 ## Changelog
 
+### Version 2.0.1
+
+- Removed debug output.
+
 ### Version 2.0.0
 
-- Based on a reverse-engineered *.aeon* project file created with *Aeon Timeline* version 3.4.20. The file is marked as version 15.
+- Based on a data model reverse-engineered from an Aeon Timeline 3.4.20 
+  sample project file. This project file is marked as version 15. 
 
 ### Version 1.0.5
 

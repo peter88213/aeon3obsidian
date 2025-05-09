@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="aeon3obsidian" basedir=".">
-	<property name="version" value="2.0.0" />
+	<property name="version" value="2.0.1" />
 	<property name="test-app" value="aeon3obsidian" />
 	
 	<property name="source-path" location="../src" />
@@ -41,10 +41,6 @@
 		
 		<copy file="../LICENSE" todir="${build-path}/${release}" />	
 		<copy file="../README.md" tofile="${build-path}/${release}/README.md" />
-		
-		<copy todir="${build-path}/${release}" failonerror="false"> 
-			<fileset dir="../sample" />
-		</copy>		
 		
 		<fixcrlf encoding="utf-8" eol="lf" srcdir="${build-path}/${release}" includes="**/*.*" />
 

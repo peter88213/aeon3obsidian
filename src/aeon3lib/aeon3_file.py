@@ -11,7 +11,6 @@ import os
 from aeon3lib.aeon3_calendar import Aeon3Calendar
 from aeon3lib.aeon3_item import Aeon3Item
 from aeon3lib.aeon3_type import Aeon3Type
-from aeon3lib.aeon3obsidian_globals import output
 
 
 class Aeon3File:
@@ -50,7 +49,6 @@ class Aeon3File:
 
         for itemUid in itemLabelLookup:
             uniqueLabel = itemLabelLookup[itemUid]
-            output(f'Processing "{uniqueLabel}" ...')
 
             # Get properties.
             jsonItem = jsonData['core']['data']['itemsById'][itemUid]
@@ -228,7 +226,6 @@ class Aeon3File:
             for enumUid in propertyType['allowed']:
                 enumLabel = propertyType['allowed'][enumUid]['label']
                 propertyEnumLookup[enumUid] = enumLabel
-                output(f'Found property enum "{enumLabel}".')
         return propertyEnumLookup
 
     def _get_property_type_lookup(self, jsonData):
@@ -239,7 +236,6 @@ class Aeon3File:
             propertyType = propertyTypes[propertyTypeUid]
             propertyTypeLabel = propertyType['label']
             propertyTypeLookup[propertyTypeUid] = propertyTypeLabel.strip()
-            output(f'Found property type "{propertyTypeLabel}".')
         return propertyTypeLookup
 
     def _get_relationship_type_lookup(self, jsonData):
@@ -249,7 +245,6 @@ class Aeon3File:
         for relationshipTypeUid in relationshipTypes:
             relationshipType = relationshipTypes[relationshipTypeUid]['label']
             relationshipTypeLookup[relationshipTypeUid] = relationshipType.strip()
-            output(f'Found relationship type "{relationshipType}".')
         return relationshipTypeLookup
 
     def _get_tag_lookup(self, jsonData):
@@ -259,7 +254,6 @@ class Aeon3File:
         for tagUid in tags:
             tagName = tags[tagUid]
             tagLookup[tagUid] = tagName.strip()
-            output(f'Found tag "{tagName}".')
         return tagLookup
 
     def _get_unique_label(self, aeonLabel):
