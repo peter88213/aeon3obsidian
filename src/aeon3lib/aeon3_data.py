@@ -24,7 +24,7 @@ class Aeon3Data:
         Positional arguments:
             itemList -- List of item UIDs.
         
-        UIDs of items with the same dateare are sorted by label.
+        UIDs of items with the same date are sorted by label.
         UIDs of undated items are placed last, sorted by label.
         Invalid UIDs are discarded.
         """
