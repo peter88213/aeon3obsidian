@@ -125,7 +125,7 @@ class Aeon3Calendar:
             return
 
         try:
-            return month, self.monthShortNames[month], self.monthNames[month]
+            return month, self.monthShortNames[month - 1], self.monthNames[month - 1]
         except:
             return
 

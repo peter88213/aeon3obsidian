@@ -4,6 +4,10 @@
 
 ## Changelog
 
+### Version 2.0.2
+
+- Fixed a bug where the wrong month is displayed due to offset in Month name lookup. 
+
 ### Version 2.0.1
 
 - Removed debug output.
