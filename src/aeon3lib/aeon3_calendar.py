@@ -15,6 +15,7 @@ class Aeon3Calendar:
         self.hoursInDay = calendarDefinitions['hoursInDay']
         self.minutesInHour = 60
         self.secondsInMinute = 60
+        self.weekdayIndexAtZero = calendarDefinitions['weekdayIndexAtZero']
         self.leapCycles = calendarDefinitions['leapCycles']
 
         #--- Era enumerations.
@@ -158,15 +159,18 @@ class Aeon3Calendar:
 
     def get_weekday(self, itemDates):
         """Return a tuple: (weekday as an integer, weekday's short name, weekday's name)."""
-        startDate = itemDates.get('startDate', None)
-        if startDate is None:
+        timestamp = self.get_timestamp(itemDates)
+        if timestamp is None:
             return
 
-        weekday = startDate.get('weekday', None)
-        if weekday is None:
-            return
-
+        minutesTotal = timestamp // self.secondsInMinute
+        hoursTotal = minutesTotal // self.minutesInHour
+        daysTotal = hoursTotal // self.hoursInDay
         try:
+            weekdayOffset = self.weekdayIndexAtZero
+            # Note: this works only for the final era
+            # TODO: consider preceding eras by length and direction
+            weekday = (daysTotal % len(self.weekdayNames)) + weekdayOffset
             return weekday, self.weekdayShortNames[weekday], self.weekdayNames[weekday]
         except:
             return
