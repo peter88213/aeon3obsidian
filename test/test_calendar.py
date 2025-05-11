@@ -1,4 +1,4 @@
-"""Unit tests for TDD of the Aron3Calendar timestamp calculations
+"""Unit tests for of the Aeon3Calendar time extraction methods.
 
 Copyright (c) 2025 Peter Triesberger
 For further information see https://github.com/peter88213/aeon3obsidian
@@ -7,10 +7,9 @@ License: GNU GPLv3 (https://www.gnu.org/licenses/gpl-3.0.en.html)
 import unittest
 
 from aeon3lib.aeon3_calendar import Aeon3Calendar
-from aeon3lib.aeon3_item import Aeon3Item
 
 
-class TestTimestamp(unittest.TestCase):
+class TestCalendar(unittest.TestCase):
 
     def setUp(self):
         jsonCalendar = {
@@ -241,33 +240,38 @@ class TestTimestamp(unittest.TestCase):
             }
         }
         # Get date/time/duration.
-        self.itemUid = 'D857497B-3FEF-4DE9-8A82-FD7E81490118'
-        self.itemDates = self.jsonData['core']['data']['itemDatesById'][self.itemUid]
-        era = self.calendar.get_era(self.itemDates)
-        weekday = self.calendar.get_weekday(self.itemDates)
-        day = self.calendar.get_day(self.itemDates)
-        hour = self.calendar.get_hour(self.itemDates)
-        minute = self.calendar.get_minute(self.itemDates)
-        second = self.calendar.get_second(self.itemDates)
-        timestamp = self.calendar.get_timestamp(self.itemDates)
-        isoDate = self.calendar.get_iso_date(self.itemDates)
-        isoTime = self.calendar.get_iso_time(self.itemDates)
-        self.testItem = Aeon3Item(
-            "Greta Ohlsson asks Mrs Hubbard for some aspirin",
-            "defaultEvent",
-            timestamp=timestamp,
-            isoDate=isoDate,
-            isoTime=isoTime,
-            era=era,
-            weekday=weekday,
-            month=(2, 'Feb', 'February'),
-            year=1933,
-            day=day,
-            hour=hour,
-            minute=minute,
-            second=second,
-            )
+        itemUid = 'D857497B-3FEF-4DE9-8A82-FD7E81490118'
+        self.itemDates = self.jsonData['core']['data']['itemDatesById'][itemUid]
 
-    def test_get_date(self):
+    def test_get_timestamp(self):
+        self.assertEqual(self.calendar.get_timestamp(self.itemDates), 60971179260)
+
+    def test_get_era(self):
+        self.assertEqual(self.calendar.get_era(self.itemDates), (1, 'AD', 'AD'))
+
+    def test_get_year(self):
         self.assertEqual(self.calendar.get_year(self.itemDates), 1933)
+
+    def test_get_month(self):
         self.assertEqual(self.calendar.get_month(self.itemDates), (2, 'Feb', 'February'))
+
+    def test_get_day(self):
+        self.assertEqual(self.calendar.get_day(self.itemDates), 6)
+
+    def test_get_hour(self):
+        self.assertEqual(self.calendar.get_hour(self.itemDates), 22)
+
+    def test_get_minute(self):
+        self.assertEqual(self.calendar.get_minute(self.itemDates), 41)
+
+    def test_get_second(self):
+        self.assertEqual(self.calendar.get_second(self.itemDates), 0)
+
+    def test_get_weekday(self):
+        self.assertEqual(self.calendar.get_weekday(self.itemDates), (1, 'Mon', 'Monday'))
+
+    def test_get_iso_date(self):
+        self.assertEqual(self.calendar.get_iso_date(self.itemDates), '1933-02-06')
+
+    def test_get_iso_time(self):
+        self.assertEqual(self.calendar.get_iso_time(self.itemDates), '22:41:00')
