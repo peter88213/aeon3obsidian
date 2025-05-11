@@ -99,10 +99,9 @@ class Aeon3Calendar:
             year = startDate['year']
             month = startDate['month']
             day = startDate['day']
+            return f'{year:04}-{month:02}-{day:02}'
         except:
             return
-
-        return f'{year:04}-{month:02}-{day:02}'
 
     def get_iso_time(self, itemDates):
         """Return a time string formatted acc. to ISO 8601. 
@@ -113,10 +112,9 @@ class Aeon3Calendar:
             hour = self.get_hour(itemDates)
             minute = self.get_minute(itemDates)
             second = self.get_second(itemDates)
+            return f'{hour:02}:{minute:02}:{second:02}'
         except:
             return
-
-        return f'{hour:02}:{minute:02}:{second:02}'
 
     def get_minute(self, itemDates):
         """Return an integer minute or None."""
