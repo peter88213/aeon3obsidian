@@ -1,0 +1,144 @@
+{
+    "calendar": {
+        "calendarType": 2,
+        "dateFormat": "Long",
+        "dateFormatIncludesDayName": false,
+        "dateOrder": "DayMonthYear",
+        "defaultToModernCentury": true,
+        "eras": [
+            {
+                "duration": 2147483647,
+                "hasLeapYears": true,
+                "isBackwards": true,
+                "leapOffset": 1,
+                "name": "BC",
+                "shortName": "BC"
+            },
+            {
+                "duration": 2147483647,
+                "hasLeapYears": true,
+                "isBackwards": false,
+                "leapOffset": 0,
+                "name": "AD",
+                "shortName": "AD"
+            }
+        ],
+        "hoursInDay": 24,
+        "ignoreEras": false,
+        "leapCycles": [
+            4,
+            100,
+            400
+        ],
+        "maxPrecision": 7,
+        "months": [
+            {
+                "leapDuration": 31,
+                "name": "January",
+                "normalDuration": 31,
+                "shortName": "Jan"
+            },
+            {
+                "leapDuration": 29,
+                "name": "February",
+                "normalDuration": 28,
+                "shortName": "Feb"
+            },
+            {
+                "leapDuration": 31,
+                "name": "March",
+                "normalDuration": 31,
+                "shortName": "Mar"
+            },
+            {
+                "leapDuration": 30,
+                "name": "April",
+                "normalDuration": 30,
+                "shortName": "Apr"
+            },
+            {
+                "leapDuration": 31,
+                "name": "May",
+                "normalDuration": 31,
+                "shortName": "May"
+            },
+            {
+                "leapDuration": 30,
+                "name": "June",
+                "normalDuration": 30,
+                "shortName": "Jun"
+            },
+            {
+                "leapDuration": 31,
+                "name": "July",
+                "normalDuration": 31,
+                "shortName": "Jul"
+            },
+            {
+                "leapDuration": 31,
+                "name": "August",
+                "normalDuration": 31,
+                "shortName": "Aug"
+            },
+            {
+                "leapDuration": 30,
+                "name": "September",
+                "normalDuration": 30,
+                "shortName": "Sep"
+            },
+            {
+                "leapDuration": 31,
+                "name": "October",
+                "normalDuration": 31,
+                "shortName": "Oct"
+            },
+            {
+                "leapDuration": 30,
+                "name": "November",
+                "normalDuration": 30,
+                "shortName": "Nov"
+            },
+            {
+                "leapDuration": 31,
+                "name": "December",
+                "normalDuration": 31,
+                "shortName": "Dec"
+            }
+        ],
+        "overrideNowTimestamp": 60972739200,
+        "thousandSeparatorFormat": "Comma",
+        "timeFormat": "Twelve",
+        "weekdayIndexAtZero": 1,
+        "weekdays": [
+            {
+                "name": "Sunday",
+                "shortName": "Sun"
+            },
+            {
+                "name": "Monday",
+                "shortName": "Mon"
+            },
+            {
+                "name": "Tuesday",
+                "shortName": "Tue"
+            },
+            {
+                "name": "Wednesday",
+                "shortName": "Wed"
+            },
+            {
+                "name": "Thursday",
+                "shortName": "Thu"
+            },
+            {
+                "name": "Friday",
+                "shortName": "Fri"
+            },
+            {
+                "name": "Saturday",
+                "shortName": "Sat"
+            }
+        ],
+        "zeroDateTimestamp": 60971011200
+    }
+}
