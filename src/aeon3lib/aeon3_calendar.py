@@ -12,6 +12,11 @@ class Aeon3Calendar:
 
     def __init__(self, calendarDefinitions):
 
+        self.hoursInDay = calendarDefinitions['hoursInDay']
+        self.minutesInHour = 60
+        self.secondsInMinute = 60
+        self.leapCycles = calendarDefinitions['leapCycles']
+
         #--- Era enumerations.
         self.eraShortNames = []
         self.eraNames = []
@@ -68,9 +73,14 @@ class Aeon3Calendar:
 
     def get_hour(self, itemDates):
         """Return an integer hour or None."""
-        startDate = itemDates.get('startDate', None)
-        if startDate is not  None:
-            return  startDate.get('hour', None)
+        timestamp = self.get_timestamp(itemDates)
+        if timestamp is None:
+            return
+
+        minutesTotal = timestamp // self.secondsInMinute
+        hoursTotal = minutesTotal // self.minutesInHour
+        daysTotal = hoursTotal // self.hoursInDay
+        return hoursTotal % daysTotal
 
     def get_iso_date(self, itemDates):
         """Return a date string formatted acc. to ISO 8601, if applicable. 
@@ -99,10 +109,9 @@ class Aeon3Calendar:
         Return None in case of error.
         """
         try:
-            startDate = itemDates['startDate']
-            hour = startDate['hour']
-            minute = startDate['minute']
-            second = startDate['second']
+            hour = self.get_hour(itemDates)
+            minute = self.get_minute(itemDates)
+            second = self.get_second(itemDates)
         except:
             return
 
@@ -110,9 +119,13 @@ class Aeon3Calendar:
 
     def get_minute(self, itemDates):
         """Return an integer minute or None."""
-        startDate = itemDates.get('startDate', None)
-        if startDate is not None:
-            return startDate.get('minute', None)
+        timestamp = self.get_timestamp(itemDates)
+        if timestamp is None:
+            return
+
+        minutesTotal = timestamp // self.secondsInMinute
+        hoursTotal = minutesTotal // self.minutesInHour
+        return minutesTotal % hoursTotal
 
     def get_month(self, itemDates):
         """Return a tuple: (month's order, month's short name, month's name)."""
@@ -131,9 +144,11 @@ class Aeon3Calendar:
 
     def get_second(self, itemDates):
         """Return an integer second or None."""
-        startDate = itemDates.get('startDate', None)
-        if startDate is not None:
-            return startDate.get('second', None)
+        timestamp = self.get_timestamp(itemDates)
+        if timestamp is None:
+            return
+
+        return timestamp % self.secondsInMinute
 
     def get_timestamp(self, itemDates):
         """Return an integer timestamp or None."""
