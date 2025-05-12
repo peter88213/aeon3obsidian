@@ -4,6 +4,10 @@
 
 ## Changelog
 
+### Version 2.1.1
+
+- No longer write the ID as a list element.
+
 ### Version 2.1.0
 
 - Rading the "actual" file version.

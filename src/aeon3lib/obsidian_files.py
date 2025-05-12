@@ -137,7 +137,7 @@ class ObsidianFiles:
 
         #--- Display ID.
         if item.displayId:
-            obsidianProperties['ID'] = f'\n  - {item.displayId}'
+            obsidianProperties['ID'] = f'{item.displayId}'
 
         #--- Date and time in ISO format ("AD" era only).
         if item.isoDate:
