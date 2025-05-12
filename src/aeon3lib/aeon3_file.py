@@ -32,7 +32,7 @@ class Aeon3File:
         jsonStr = self._get_json_string()
         jsonData = json.loads(jsonStr)
 
-        print(f'Found file version: "{jsonData["core"].get("coreFileVersion", "Unknown")}".')
+        print(f'Found file version: "{jsonData.get("fileVersion", "Unknown")}".')
 
         #--- Create lookup dictionaries (labels by UID).
         itemLabelLookup = self._get_item_label_lookup(jsonData)
@@ -52,6 +52,7 @@ class Aeon3File:
 
             # Get properties.
             jsonItem = jsonData['core']['data']['itemsById'][itemUid]
+            displayId = jsonItem.get('displayId', None)
             typeUid = jsonItem.get('type', None)
             shortLabel = jsonItem.get('shortLabel', None)
             summary = jsonItem.get('summary', None)
@@ -109,6 +110,7 @@ class Aeon3File:
             # Instantiate the item object.
             self.data.items[itemUid] = Aeon3Item(
                 uniqueLabel,
+                displayId,
                 typeUid,
                 shortLabel=shortLabel,
                 summary=summary,

@@ -4,6 +4,11 @@
 
 ## Changelog
 
+### Version 2.1.0
+
+- Rading the "actual" file version.
+- Adding the AT display ID to the YAML section.
+
 ### Version 2.0.2
 
 - Fixed a bug where the wrong month is displayed due to offset in Month name lookup. 

@@ -1,4 +1,4 @@
-[![Download the latest release](docs/img/download-button.png)](https://raw.githubusercontent.com/peter88213/aeon3obsidian/main/dist/aeon3obsidian_v2.0.2.zip)
+[![Download the latest release](docs/img/download-button.png)](https://raw.githubusercontent.com/peter88213/aeon3obsidian/main/dist/aeon3obsidian_v2.1.0.zip)
 [![Changelog](docs/img/changelog-button.png)](docs/changelog.md)
 [![Give feedback](docs/img/feedback-button.png)](https://github.com/peter88213/aeon3obsidian/discussions)
 
@@ -42,7 +42,7 @@ may no longer work for you. Please consider it experimental.
 
 ## Download and install
 
-[Download the latest release (version 2.0.2)](https://raw.githubusercontent.com/peter88213/aeon3obsidian/main/dist/aeon3obsidian_v2.0.2.zip)
+[Download the latest release (version 2.1.0)](https://raw.githubusercontent.com/peter88213/aeon3obsidian/main/dist/aeon3obsidian_v2.1.0.zip)
 
 - Unpack the zipfile and copy *aeon3obsidian.py* whereever you want.
 

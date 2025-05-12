@@ -135,7 +135,11 @@ class ObsidianFiles:
         # Return the YAML part of an item page as a single string.
         obsidianProperties = {}
 
-        #--- Date and time in ISO format ("AD" era only)
+        #--- Display ID.
+        if item.displayId:
+            obsidianProperties['ID'] = f'\n  - {item.displayId}'
+
+        #--- Date and time in ISO format ("AD" era only).
         if item.isoDate:
             obsidianProperties['date'] = item.isoDate
             if item.isoTime:

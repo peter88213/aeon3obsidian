@@ -11,6 +11,7 @@ class Aeon3Item:
     def __init__(
             self,
             label,
+            displayId,
             typeUid,
             shortLabel=None,
             summary=None,
@@ -33,6 +34,7 @@ class Aeon3Item:
             ):
 
         self.label = label
+        self.displayId = displayId
         self.typeUid = typeUid
         self.shortLabel = shortLabel
         self.summary = summary
