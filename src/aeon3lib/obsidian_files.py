@@ -27,7 +27,7 @@ class ObsidianFiles:
         #--- Create one file per item.
         for uid in self.data.items:
             item = self.data.items[uid]
-            title = self._sanitize_title(item.label)
+            title = self._sanitize_title(item.uniqueLabel)
             text = self._get_item_page_yaml(item)
             text = f'{text}{self._get_item_page_markdown(item)}'
             self._write_file(f'{self.folderPath}/{title}.md', text)
@@ -45,7 +45,7 @@ class ObsidianFiles:
             lines = []
             sortedItems = self.data.sort_items_by_date(self.data.itemIndex[typeUid])
             for itemUid in sortedItems:
-                lines.append(f'- [[{self.data.items[itemUid].label}]]')
+                lines.append(f'- [[{self.data.items[itemUid].uniqueLabel}]]')
             text = '\n'.join(lines)
             self._write_file(f'{self.folderPath}/_{typeLabel}.md', text)
         text = '\n'.join(mainIndexlines)
@@ -57,7 +57,7 @@ class ObsidianFiles:
             level += 1
             for uid in branch:
                 if uid in self.data.items:
-                    link = self._sanitize_title(self.data.items[uid].label)
+                    link = self._sanitize_title(self.data.items[uid].uniqueLabel)
                     typeUid = self.data.items[uid].typeUid
                     if self.data.itemTypes[typeUid].isNarrativeFolder:
                         linkPrefix = f"{'#' * level} "
@@ -135,6 +135,17 @@ class ObsidianFiles:
         # Return the YAML part of an item page as a single string.
         obsidianProperties = {}
 
+        #--- Label.
+        if item.label:
+            obsidianProperties['label'] = f'{item.label}'
+
+        #--- Short label as Alias.
+        if item.shortLabel:
+            obsidianProperties['aliases'] = f'\n  - {item.shortLabel}'
+
+        #--- Type.
+        obsidianProperties['type'] = f'{self.data.itemTypes[item.typeUid].label}'
+
         #--- Display ID.
         if item.displayId:
             obsidianProperties['ID'] = f'{item.displayId}'
@@ -144,10 +155,6 @@ class ObsidianFiles:
             obsidianProperties['date'] = item.isoDate
             if item.isoTime:
                 obsidianProperties['time'] = f'{item.isoDate}T{item.isoTime}'
-
-        #--- Short label as Alias.
-        if item.shortLabel:
-            obsidianProperties['aliases'] = f'\n  - {item.shortLabel}'
 
         #--- List of tags.
         if item.tags:

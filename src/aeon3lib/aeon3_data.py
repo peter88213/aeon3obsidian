@@ -24,8 +24,8 @@ class Aeon3Data:
         Positional arguments:
             itemList -- List of item UIDs.
         
-        UIDs of items with the same date are sorted by label.
-        UIDs of undated items are placed last, sorted by label.
+        UIDs of items with the same date are sorted by uniqueLabel.
+        UIDs of undated items are placed last, sorted by uniqueLabel.
         Invalid UIDs are discarded.
         """
         datedItems = []
@@ -42,10 +42,10 @@ class Aeon3Data:
         datedItems.sort(key=lambda e: (
             self.items[e].era,
             self.items[e].timestamp,
-            self.items[e].label
+            self.items[e].uniqueLabel
             ))
         undatedItems.sort(key=lambda e: (
-            self.items[e].label
+            self.items[e].uniqueLabel
             ))
         return datedItems + undatedItems
 

@@ -4,6 +4,11 @@
 
 ## Changelog
 
+
+### Version 2.2.0
+
+- Added the original label and the item type to the YAML properties.
+
 ### Version 2.1.1
 
 - No longer write the ID as a list element.

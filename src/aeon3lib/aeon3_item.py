@@ -10,9 +10,10 @@ class Aeon3Item:
 
     def __init__(
             self,
-            label,
+            uniqueLabel,
             displayId,
             typeUid,
+            label=None,
             shortLabel=None,
             summary=None,
             properties=[],
@@ -33,9 +34,10 @@ class Aeon3Item:
             children=[],
             ):
 
-        self.label = label
+        self.uniqueLabel = uniqueLabel
         self.displayId = displayId
         self.typeUid = typeUid
+        self.label = label
         self.shortLabel = shortLabel
         self.summary = summary
         self.properties = properties

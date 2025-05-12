@@ -17,36 +17,42 @@ class TestItemsort(unittest.TestCase):
         self.data.items = {
             'item5': Aeon3Item(
                 'item 5',
+                'EV1',
                 'defaultEvent',
                 era=None,
                 timestamp=None,
                 ),
             'item0': Aeon3Item(
                 'item 0',
+                'EV2',
                 'defaultEvent',
                 era=(1, 'AD', 'AD'),
                 timestamp=100,
                 ),
             'item1': Aeon3Item(
                 'item 1',
+                'EV3',
                 'defaultEvent',
                 era=(0, 'BC', 'BC'),
                 timestamp=101,
                 ),
             'item2': Aeon3Item(
                 'item 2',
+                'EV4',
                 'defaultEvent',
                 era=(1, 'AD', 'AD'),
                 timestamp=99,
                 ),
             'item3': Aeon3Item(
                 'item 3',
+                'EV5',
                 'defaultEvent',
                 era=(0, 'BC', 'BC'),
                 timestamp=96,
                 ),
             'item4': Aeon3Item(
                 'item 4',
+                'EV6',
                 'defaultEvent',
                 era=(1, 'AD', 'AD'),
                 timestamp=98,

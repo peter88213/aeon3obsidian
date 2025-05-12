@@ -35,7 +35,7 @@ class Aeon3File:
         print(f'Found file version: "{jsonData.get("fileVersion", "Unknown")}".')
 
         #--- Create lookup dictionaries (labels by UID).
-        itemLabelLookup = self._get_item_label_lookup(jsonData)
+        itemLabelLookup, uniqueItemLabelLookup = self._get_item_label_lookup(jsonData)
         tagLookup = self._get_tag_lookup(jsonData)
         relationshipTypeLookup = self._get_relationship_type_lookup(jsonData)
         propertyTypeLookup = self._get_property_type_lookup(jsonData)
@@ -47,8 +47,9 @@ class Aeon3File:
         #--- Build the items of the data model.
         calendar = Aeon3Calendar(jsonData['core']['definitions']['calendar'])
 
-        for itemUid in itemLabelLookup:
-            uniqueLabel = itemLabelLookup[itemUid]
+        for itemUid in uniqueItemLabelLookup:
+            label = itemLabelLookup[itemUid]
+            uniqueLabel = uniqueItemLabelLookup[itemUid]
 
             # Get properties.
             jsonItem = jsonData['core']['data']['itemsById'][itemUid]
@@ -78,7 +79,7 @@ class Aeon3File:
 
                 relationship = jsonData['core']['data']['relationshipsById'][relUid]
                 itemRelationship = (
-                    itemLabelLookup[relationship['object']],
+                    uniqueItemLabelLookup[relationship['object']],
                     relationshipTypeLookup[relationship['reference']]
                 )
                 relationships.append(itemRelationship)
@@ -87,11 +88,11 @@ class Aeon3File:
             children = []
             jsonChildrenDict = jsonData['core']['data']['superAndChildOrderById'][itemUid]
             for childUid in jsonChildrenDict['childOrder']:
-                if not childUid in itemLabelLookup:
+                if not childUid in uniqueItemLabelLookup:
                     # child might be deleted
                     continue
 
-                children.append(itemLabelLookup[childUid])
+                children.append(uniqueItemLabelLookup[childUid])
 
             # Get date/time/duration.
             itemDates = jsonData['core']['data']['itemDatesById'][itemUid]
@@ -112,6 +113,7 @@ class Aeon3File:
                 uniqueLabel,
                 displayId,
                 typeUid,
+                label=label,
                 shortLabel=shortLabel,
                 summary=summary,
                 properties=properties,
@@ -146,6 +148,7 @@ class Aeon3File:
 
     def _get_item_label_lookup(self, jsonData):
         # Return a lookup dictionary with unique item labels by UID.
+        uniqueItemLabelLookup = {}
         itemLabelLookup = {}
         jsonItems = jsonData['core']['data']['itemsById']
         for itemUid in jsonItems:
@@ -156,9 +159,10 @@ class Aeon3File:
             jsonItem = jsonItems[itemUid]
             aeonLabel = jsonItem.get('label', None)
             if aeonLabel is not None:
+                itemLabelLookup[itemUid] = aeonLabel
                 uniqueLabel = self._get_unique_label(aeonLabel.strip())
-                itemLabelLookup[itemUid] = uniqueLabel
-        return itemLabelLookup
+                uniqueItemLabelLookup[itemUid] = uniqueLabel
+        return itemLabelLookup, uniqueItemLabelLookup
 
     def _get_item_types(self, jsonData):
         # Return a dictionary with item types by UID.
