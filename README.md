@@ -36,7 +36,7 @@ may no longer work for you. Please consider it experimental.
 
 ## Requirements
 
-- [Python](https://www.python.org/) version 3.6+.
+- [Python](https://www.python.org/) version 3.7+.
 
 **Aeon Timeline 2 users:** A variant for Aeon Timeline 2 can be found [here](https://peter88213.github.io/aeon2obsidian/).
 

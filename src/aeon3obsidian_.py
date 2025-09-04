@@ -2,7 +2,7 @@
 """Convert Aeon Aeon3Data 3 project data to Obsidian Markdown fileset. 
 
 Version @release
-Requires Python 3.6+
+Requires Python 3.7+
 
 usage: aeon3obsidian.py Sourcefile
 
