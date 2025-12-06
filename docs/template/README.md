@@ -7,18 +7,15 @@
 The *aeon3obsidian* Python script extracts the items of an [Aeon Timeline 3](https://timeline.app/) 
 project and generates a set of Markdown documents.
 
----
 
-## Note
+> [!NOTE]
+> This script is based on a data model reverse-engineered from an Aeon Timeline 3.4.20 
+> sample project file. This project file is marked as version 15. 
+>
+> When the application is updated, the file format may change and this tool 
+> may no longer work for you. Please consider it experimental.
 
-This script is based on a data model reverse-engineered from an Aeon Timeline 3.4.20 
-sample project file. 
-This project file is marked as version 15. 
 
-When the application is updated, the file format may change and this tool 
-may no longer work for you. Please consider it experimental.
-
----
 
 ![Screenshot](docs/Screenshots/screen01.png)
 
