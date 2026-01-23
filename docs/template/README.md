@@ -1,6 +1,5 @@
 [![Download the latest release](docs/img/download-button.png)](https://raw.githubusercontent.com/peter88213/aeon3obsidian/main/dist/aeon3obsidian_v0.99.0.zip)
 [![Changelog](docs/img/changelog-button.png)](docs/changelog.md)
-[![Give feedback](docs/img/feedback-button.png)](https://github.com/peter88213/aeon3obsidian/discussions)
 
 ---
 
@@ -79,3 +78,4 @@ In case of doubt, please start the *aeon3obsidian.py* script from the text conso
 This is Open Source software, and *aeon3obsidian* is licensed under GPLv3. See the
 [GNU General Public License website](https://www.gnu.org/licenses/gpl-3.0.en.html) for more
 details, or consult the [LICENSE](https://github.com/peter88213/aeon3obsidian/blob/main/LICENSE) file.
+
