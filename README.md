@@ -1,6 +1,5 @@
 [![Download the latest release](docs/img/download-button.png)](https://raw.githubusercontent.com/peter88213/aeon3obsidian/main/dist/aeon3obsidian_v2.2.0.zip)
 [![Changelog](docs/img/changelog-button.png)](docs/changelog.md)
-[![Give feedback](docs/img/feedback-button.png)](https://github.com/peter88213/aeon3obsidian/discussions)
 
 ---
 
